@@ -226,15 +226,10 @@ function JossStick({ pos, draggable, onDrop, isRemix }: JossStickProps) {
   const style: React.CSSProperties & Record<string, string | number> = {
     left: initialLeft.current ? `${initialLeft.current}px` : `${100 * pos.x}%`,
     top: initialTop.current ? `${initialTop.current}px` : `${100 * pos.y}%`,
-    transform: `translate(-50%, -100%) scale(0.65) rotateZ(${4 * pos.z - 2}deg)`,
+    transform: `translate(-50%, -100%) scale(${isRemix ? 0.85 : 0.65}) rotateZ(${4 * pos.z - 2}deg)`,
     '--ttl': pos.exp ? `${ttlSeconds}s` : '0s',
-    '--progress': pos.exp ? Math.max(ttlSeconds / 3600, 0) : 1,
-    background: isRemix
-      ? 'linear-gradient(0deg, #38bdf8 0%, #ec4899 50%, #fde047 100%)'
-      : undefined
+    '--progress': pos.exp ? Math.max(ttlSeconds / 3600, 0) : 1
   };
-
-  const className = `joss ${draggable ? 'draggable ' : ''}${isBurning ? 'burn ' : ''}`;
 
   const handleMove = useCallback((e: MouseEvent | TouchEvent) => {
     e.preventDefault();
@@ -293,6 +288,32 @@ function JossStick({ pos, draggable, onDrop, isRemix }: JossStickProps) {
     window.addEventListener(isTouch ? 'touchmove' : 'mousemove', handleMove, { passive: false });
     window.addEventListener(isTouch ? 'touchend' : 'mouseup', handleEnd);
   }, [handleMove, handleEnd]);
+
+  // Render sleek Neon Lightstick Wand in Remix Mode vs Traditional Incense Stick in Basic Mode
+  if (isRemix) {
+    return (
+      <div
+        role="img"
+        aria-label="Neon Sparkler Wand"
+        className={`absolute flex flex-col items-center ${draggable ? 'cursor-grab ' : ''}`}
+        style={style}
+        ref={(el) => { stickRefs.current[0] = el; }}
+        onMouseDown={draggable ? handleStart : undefined}
+        onTouchStart={draggable ? handleStart : undefined}
+      >
+        {/* Sparkler Tip Emitter Target */}
+        <div className="joss-ember-tip relative w-4 h-4 rounded-full bg-white shadow-[0_0_20px_#ffffff] animate-ping" />
+
+        {/* Glowing Neon Lightstick Body */}
+        <div className="w-2.5 h-32 rounded-full bg-gradient-to-b from-fuchsia-400 via-pink-500 to-cyan-400 border border-white shadow-[0_0_18px_rgba(236,72,153,1)]" />
+
+        {/* Handle */}
+        <div className="w-3 h-8 rounded-b-md bg-stone-800 border border-stone-600 shadow-md" />
+      </div>
+    );
+  }
+
+  const className = `joss ${draggable ? 'draggable ' : ''}${isBurning ? 'burn ' : ''}`;
 
   return (
     <>
