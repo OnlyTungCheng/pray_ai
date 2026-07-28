@@ -1,13 +1,19 @@
-import React, { useEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react';
+import type { IncenseStick } from '../types';
 
-export default function RealSmokeEngine({ sticks }) {
-  const canvasRef = useRef(null);
+interface RealSmokeEngineProps {
+  sticks: IncenseStick[];
+}
+
+export default function RealSmokeEngine({ sticks }: RealSmokeEngineProps) {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
-    let animationFrameId;
+    if (!ctx) return;
+    let animationFrameId: number;
 
     const updateSize = () => {
       if (canvas.parentElement) {
@@ -19,12 +25,25 @@ export default function RealSmokeEngine({ sticks }) {
     window.addEventListener('resize', updateSize);
 
     // Particle pool for photorealistic slow, delicate wispy smoke
-    let particles = [];
+    let particles: FluidSmokeParticle[] = [];
     const maxParticles = 140;
     let time = 0;
 
     class FluidSmokeParticle {
-      constructor(x, y) {
+      x: number;
+      y: number;
+      size: number;
+      vy: number;
+      vx: number;
+      maxSize: number;
+      growthRate: number;
+      opacity: number;
+      maxOpacity: number;
+      life: number;
+      maxLife: number;
+      seed: number;
+
+      constructor(x: number, y: number) {
         this.x = x + (Math.random() - 0.5) * 1.2;
         this.y = y;
         this.size = Math.random() * 1.2 + 0.8; // Starts as a delicate thin thread
@@ -63,7 +82,7 @@ export default function RealSmokeEngine({ sticks }) {
         }
       }
 
-      draw(ctx) {
+      draw(ctx: CanvasRenderingContext2D) {
         if (this.opacity <= 0.003) return;
 
         ctx.save();

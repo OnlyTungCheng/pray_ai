@@ -1,17 +1,19 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
+import { Routes, Route } from 'react-router';
 import TechDeities, { DEITIES } from './components/TechDeities';
 import CenserSection from './components/CenserSection';
 import PrayerModal from './components/PrayerModal';
 import BgmPlayer from './components/BgmPlayer';
 import SakuraRain from './components/SakuraRain';
+import type { IncenseStick, Wish } from './types';
 
-export default function App() {
+function AltarPage() {
   const [currentDeityId] = useState('claude');
   const [isPrayerModalOpen, setIsPrayerModalOpen] = useState(false);
   const [isSakuraActive, setIsSakuraActive] = useState(false);
 
   // Incense sticks state
-  const [sticks, setSticks] = useState(() => {
+  const [sticks, setSticks] = useState<IncenseStick[]>(() => {
     try {
       const saved = localStorage.getItem('dev_altar_sticks');
       if (saved) return JSON.parse(saved);
@@ -23,7 +25,7 @@ export default function App() {
   });
 
   // Dev wishes list
-  const [wishes, setWishes] = useState(() => {
+  const [wishes, setWishes] = useState<Wish[]>(() => {
     try {
       const saved = localStorage.getItem('dev_altar_wishes');
       if (saved) return JSON.parse(saved);
@@ -56,7 +58,7 @@ export default function App() {
     } catch (e) {}
   }, [sticks, wishes]);
 
-  const handleAddStick = (newStick) => {
+  const handleAddStick = (newStick: IncenseStick) => {
     setSticks((prev) => [...prev, newStick]);
   };
 
@@ -64,7 +66,7 @@ export default function App() {
     setSticks([]);
   };
 
-  const handleAddWish = (newWish) => {
+  const handleAddWish = (newWish: Wish) => {
     setWishes((prev) => [newWish, ...prev]);
     setIsSakuraActive(true); // Trigger falling peach blossom petals gently!
   };
@@ -105,5 +107,13 @@ export default function App() {
         />
       </main>
     </div>
+  );
+}
+
+export default function App() {
+  return (
+    <Routes>
+      <Route path="/" element={<AltarPage />} />
+    </Routes>
   );
 }

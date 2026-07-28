@@ -1,6 +1,6 @@
-import React from 'react';
+import type { Deity } from '../types';
 
-export const DEITIES = [
+export const DEITIES: Deity[] = [
   {
     id: 'codex',
     name: 'Thần Codex',

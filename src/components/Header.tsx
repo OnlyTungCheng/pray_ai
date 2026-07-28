@@ -1,6 +1,11 @@
-import React from 'react';
+interface HeaderProps {
+  totalBurned: number;
+  wishCount: number;
+  isBrightBg: boolean;
+  onToggleBg: () => void;
+}
 
-export default function Header({ totalBurned, wishCount, isBrightBg, onToggleBg }) {
+export default function Header({ totalBurned, wishCount, isBrightBg, onToggleBg }: HeaderProps) {
   return (
     <header className="w-full max-w-5xl mx-auto px-4 pt-6 pb-4 flex flex-col md:flex-row items-center justify-between gap-4 z-30 relative">
       {/* Brand & Logo */}
