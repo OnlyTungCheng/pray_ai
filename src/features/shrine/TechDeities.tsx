@@ -17,7 +17,7 @@ export const DEITIES: PartyDeity[] = [
   },
   {
     id: 'claude',
-    name: 'Thần Claude Code',
+    name: 'Thần Claude',
     title: 'Architecture & Logic',
     statueImg: '/claude_chibi.jpg',
     partyImg: '/claude_party.jpg',
@@ -160,7 +160,7 @@ export default function TechDeities({ themeMode }: TechDeitiesProps) {
                   {isRemix ? '🕶️' : '🧘‍♂️'} {displayName}
                 </div>
 
-                {/* 100% NEW Generated Party Mascot Image File */}
+                {/* Party Mascot Image */}
                 <div className="relative overflow-hidden w-full bg-stone-950 flex items-center justify-center">
                   <img
                     src={imgSrc}

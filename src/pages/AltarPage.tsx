@@ -26,7 +26,7 @@ export default function AltarPage() {
       id: 1,
       author: 'Senior Fullstack Dev',
       text: 'Cầu cho lượt Deploy Production lúc 5h chiều nay 0 downtime, 0 bug, server ổn định!',
-      targetDeity: 'Claude Code',
+      targetDeity: 'Claude',
       blessings: 18,
       time: '10 mins ago'
     }
@@ -94,7 +94,7 @@ export default function AltarPage() {
 
       {/* Clean Single Screen Altar Content (No Scroll, Ultra Clean View) */}
       <main className="flex-1 flex flex-col justify-center items-center relative overflow-hidden">
-        {/* 1. Tượng Thần Dev (Claude Code, Codex, Kiro) trong Miếu Thờ */}
+        {/* 1. Tượng Thần Dev (Claude, Codex, Kiro) trong Miếu Thờ */}
         <TechDeities themeMode={themeMode} />
 
         {/* 2. Bát Hương / Bàn DJ + Nút Dọn Bát Hương & Nút Khấn Nguyện */}
