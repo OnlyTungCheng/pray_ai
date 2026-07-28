@@ -1,0 +1,61 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer utilities {
+  .perspective {
+    perspective: 1000px;
+  }
+}
+
+html, body, #root {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+  background-color: #1a1918;
+  color: #d6d3d1;
+  font-family: 'Noto Sans TC', system-ui, -apple-system, sans-serif;
+}
+
+/* Incense dispenser animation */
+.joss-box-anim {
+  animation: joss-box-pulse 2.5s cubic-bezier(0, .5, .5, .5) 2s 3, joss-box-fadein 1.5s .5s both;
+}
+
+@keyframes joss-box-pulse {
+  0% { outline: 0 solid transparent; }
+  10% { outline: 0.1rem solid rgba(221, 204, 51, 0.7); }
+  100% { outline: 1.5rem solid transparent; }
+}
+
+@keyframes joss-box-fadein {
+  0% { opacity: 0; }
+}
+
+/* Ember Glowing Tip */
+.joss.burn .joss-ember-tip {
+  position: absolute;
+  left: 22.5px;
+  bottom: calc(5% + var(--progress, 1) * 95%);
+  transform: translate(-50%, 50%);
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #ffffff 20%, #ff9800 60%, #dc2626 100%);
+  box-shadow: 0 0 6px 3px rgba(251, 146, 60, 0.9), 0 0 12px 5px rgba(220, 38, 38, 0.6);
+  animation: ember-glow-pulse 1.2s infinite alternate ease-in-out;
+  z-index: 30;
+}
+
+@keyframes ember-glow-pulse {
+  0% {
+    transform: translate(-50%, 50%) scale(0.9);
+    box-shadow: 0 0 5px 2px rgba(251, 146, 60, 0.8), 0 0 10px 4px rgba(220, 38, 38, 0.5);
+  }
+  100% {
+    transform: translate(-50%, 50%) scale(1.15);
+    box-shadow: 0 0 9px 5px rgba(251, 146, 60, 1), 0 0 16px 7px rgba(239, 68, 68, 0.8);
+  }
+}
