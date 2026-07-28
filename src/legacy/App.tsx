@@ -1,5 +1,5 @@
 import { Routes, Route } from 'react-router';
-import AltarPage from './pages/AltarPage';
+import AltarPage from '../screens/AltarPage';
 
 export default function App() {
   return (

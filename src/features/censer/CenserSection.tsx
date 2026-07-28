@@ -1,5 +1,4 @@
 import React, { useState, useRef, useCallback, useEffect } from 'react';
-import type { MouseEvent as ReactMouseEvent, TouchEvent as ReactTouchEvent, CSSProperties } from 'react';
 import { playKnockSound } from '../../utils/sound';
 import RealSmokeEngine from './RealSmokeEngine';
 import type { IncenseStick } from '../../types';
