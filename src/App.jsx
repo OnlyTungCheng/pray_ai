@@ -4,11 +4,13 @@ import CenserSection from './components/CenserSection';
 import PrayerModal from './components/PrayerModal';
 import BgmPlayer from './components/BgmPlayer';
 import SakuraRain from './components/SakuraRain';
+import DiscoBall from './components/DiscoBall';
 
 export default function App() {
   const [currentDeityId] = useState('claude');
   const [isPrayerModalOpen, setIsPrayerModalOpen] = useState(false);
   const [isSakuraActive, setIsSakuraActive] = useState(false);
+  const [themeMode, setThemeMode] = useState('basic'); // 'basic' | 'remix'
 
   // Incense sticks state
   const [sticks, setSticks] = useState(() => {
@@ -66,15 +68,32 @@ export default function App() {
 
   const handleAddWish = (newWish) => {
     setWishes((prev) => [newWish, ...prev]);
-    setIsSakuraActive(true); // Trigger falling peach blossom petals gently!
+    setIsSakuraActive(true); // Trigger falling peach blossom petals!
+  };
+
+  const handleToggleTheme = () => {
+    setThemeMode((prev) => (prev === 'basic' ? 'remix' : 'basic'));
   };
 
   const currentDeityObj = DEITIES.find((d) => d.id === currentDeityId) || DEITIES[0];
+  const isRemix = themeMode === 'remix';
 
   return (
-    <div className="w-full h-screen overflow-hidden flex flex-col justify-between font-sans selection:bg-amber-500 selection:text-stone-950 bg-[#241e1a] bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-amber-900/30 via-[#1c1815] to-stone-950 text-stone-200 p-2 md:p-4 relative">
-      {/* Background Music Player */}
-      <BgmPlayer />
+    <div
+      className={`w-full h-screen overflow-hidden flex flex-col justify-between font-sans selection:bg-amber-500 selection:text-stone-950 p-2 md:p-4 relative transition-colors duration-700 ${
+        isRemix
+          ? 'bg-[#15021a] bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-fuchsia-900/60 via-[#1f002b] to-stone-950 text-fuchsia-100'
+          : 'bg-[#241e1a] bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-amber-900/30 via-[#1c1815] to-stone-950 text-stone-200'
+      }`}
+    >
+      {/* Background Music Player with Theme Toggle */}
+      <BgmPlayer
+        themeMode={themeMode}
+        onToggleTheme={handleToggleTheme}
+      />
+
+      {/* Interactive 3D Disco Ball for Vinahouse Remix Theme */}
+      <DiscoBall isRemix={isRemix} />
 
       {/* Gentle Falling Peach Blossom Petals Animation (Hoa Đào Rơi) */}
       <SakuraRain
@@ -91,10 +110,10 @@ export default function App() {
         hasActiveIncense={sticks.length > 0}
       />
 
-      {/* Clean Single Screen Altar Content (No Scroll, Ultra Clean View) */}
+      {/* Single Screen Altar Content (No Scroll, Ultra Clean View) */}
       <main className="flex-1 flex flex-col justify-center items-center relative overflow-hidden">
-        {/* 1. Tượng Thần Dev (Claude Code, Codex, Kiro) */}
-        <TechDeities />
+        {/* 1. Tượng Thần Dev (Claude Code, Codex, Kiro) trong Miếu Thờ */}
+        <TechDeities themeMode={themeMode} />
 
         {/* 2. Bát Hương & Khói Nhang + Nút Dọn Bát Hương & Nút Khấn Nguyện */}
         <CenserSection
