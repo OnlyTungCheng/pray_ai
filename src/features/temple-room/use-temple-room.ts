@@ -130,7 +130,7 @@ export function useTempleRoom({
         {
           event: "room-action",
         },
-        ({ payload }) => {
+        ({ payload }: any) => {
           applyRealtimeEvent(
             payload as RoomActionPayload,
           );
@@ -142,14 +142,12 @@ export function useTempleRoom({
           event: "sync",
         },
         () => {
-          const state = channel.presenceState<
-            Participant
-          >();
+          const state = channel.presenceState();
 
           const nextParticipants =
             Object.values(state).flatMap(
               (entries) => entries,
-            );
+            ) as unknown as Participant[];
 
           setParticipants(nextParticipants);
         },
@@ -173,7 +171,7 @@ export function useTempleRoom({
           // "sync" sẽ cập nhật snapshot đầy đủ.
         },
       )
-      .subscribe(async (status, error) => {
+      .subscribe(async (status: string, error?: any) => {
         if (status === "SUBSCRIBED") {
           setConnectionStatus("connected");
 

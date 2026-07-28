@@ -40,7 +40,7 @@ export default function RemixFireworks({ isActive, onComplete }: RemixFireworksP
 
       constructor(x: number, targetY: number, color: string) {
         this.x = x;
-        this.y = canvas.height;
+        this.y = canvas!.height;
         this.targetY = targetY;
         this.vy = -(Math.random() * 4 + 11);
         this.color = color;
