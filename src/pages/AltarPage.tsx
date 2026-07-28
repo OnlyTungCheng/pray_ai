@@ -64,8 +64,8 @@ export default function AltarPage() {
     <div
       className={`w-full h-screen overflow-hidden flex flex-col justify-between font-sans selection:bg-amber-500 selection:text-stone-950 p-2 md:p-4 relative transition-colors duration-700 ${
         isRemix
-          ? 'bg-[#15021a] bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-fuchsia-900/60 via-[#1f002b] to-stone-950 text-fuchsia-100'
-          : 'bg-[#241e1a] bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-amber-900/30 via-[#1c1815] to-stone-950 text-stone-200'
+          ? 'bg-[#1e0524] bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-fuchsia-800/70 via-[#2e0938] to-stone-950 text-fuchsia-100'
+          : 'bg-[#2b231d] bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-amber-700/50 via-[#26201b] to-stone-950 text-stone-100'
       }`}
     >
       {/* Background Music Player with Theme Switcher */}
@@ -97,7 +97,7 @@ export default function AltarPage() {
         {/* 1. Tượng Thần Dev (Claude Code, Codex, Kiro) trong Miếu Thờ */}
         <TechDeities themeMode={themeMode} />
 
-        {/* 2. Bát Hương / Bán Pháo Bông + Nút Dọn Bát Hương & Nút Khấn Nguyện */}
+        {/* 2. Bát Hương / Bàn DJ + Nút Dọn Bát Hương & Nút Khấn Nguyện */}
         <CenserSection
           sticks={sticks}
           onAddStick={handleAddStick}
