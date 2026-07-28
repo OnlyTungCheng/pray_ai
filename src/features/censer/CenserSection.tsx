@@ -16,7 +16,7 @@ interface CenserSVGProps {
 }
 
 // 1. Traditional Incense Urn SVG (Basic Theme)
-function CenserSVG({ onKnock, isRemix }: CenserSVGProps) {
+function CenserSVG({ onKnock }: CenserSVGProps) {
   return (
     <svg
       role="img"
@@ -81,12 +81,12 @@ function CenserSVG({ onKnock, isRemix }: CenserSVGProps) {
   );
 }
 
-// 2. Birthday Cake Base SVG (Vinahouse Remix Theme)
-function BirthdayCakeSVG({ onKnock }: CenserSVGProps) {
+// 2. Bàn DJ & Mâm Đĩa Than Neon SVG (Vinahouse Remix Theme)
+function DJTurntableSVG({ onKnock }: CenserSVGProps) {
   return (
     <svg
       role="img"
-      aria-label="Birthday Cake Base"
+      aria-label="DJ Turntable Console"
       viewBox="0 0 135 259"
       version="1.1"
       xmlns="http://www.w3.org/2000/svg"
@@ -96,67 +96,73 @@ function BirthdayCakeSVG({ onKnock }: CenserSVGProps) {
       style={{ pointerEvents: 'all', cursor: 'pointer' }}
     >
       <defs>
-        <linearGradient id="cake_top" x1="0%" y1="0%" x2="100%" y2="100%">
+        <linearGradient id="dj_body" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stopColor="#1e1b4b" />
+          <stop offset="50%" stopColor="#311042" />
+          <stop offset="100%" stopColor="#0f172a" />
+        </linearGradient>
+        <radialGradient id="vinyl_disc" cx="0.5" cy="0.5" r="0.5">
           <stop offset="0%" stopColor="#f472b6" />
-          <stop offset="50%" stopColor="#ec4899" />
-          <stop offset="100%" stopColor="#db2777" />
-        </linearGradient>
-        <linearGradient id="cake_mid" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stopColor="#fb7185" />
-          <stop offset="100%" stopColor="#e11d48" />
-        </linearGradient>
-        <linearGradient id="cake_base" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stopColor="#38bdf8" />
-          <stop offset="100%" stopColor="#0284c7" />
-        </linearGradient>
-        <radialGradient id="cake_hole" cx="0.5" cy="0.5" r="0.5">
-          <stop offset="0%" stopColor="#831843" />
-          <stop offset="100%" stopColor="#500724" />
+          <stop offset="25%" stopColor="#0f172a" />
+          <stop offset="70%" stopColor="#1e293b" />
+          <stop offset="100%" stopColor="#38bdf8" />
+        </radialGradient>
+        <radialGradient id="dj_hole" cx="0.5" cy="0.5" r="0.5">
+          <stop offset="0%" stopColor="#ec4899" />
+          <stop offset="100%" stopColor="#4c1d95" />
         </radialGradient>
       </defs>
 
       <g transform="translate(0, 140)">
-        {/* Bottom Cake Tier */}
-        <path
-          d="M 15,70 Q 67.5,95 120,70 L 120,105 Q 67.5,130 15,105 Z"
-          fill="url(#cake_base)"
-          stroke="#0369a1"
-          strokeWidth="2"
-        />
-        {/* Middle Cake Tier */}
-        <path
-          d="M 25,40 Q 67.5,60 110,40 L 110,72 Q 67.5,92 25,72 Z"
-          fill="url(#cake_mid)"
-          stroke="#be123c"
-          strokeWidth="2"
-        />
-        {/* Top Cake Tier */}
-        <path
-          d="M 35,15 Q 67.5,32 100,15 L 100,42 Q 67.5,59 35,42 Z"
-          fill="url(#cake_top)"
-          stroke="#9d174d"
-          strokeWidth="2"
+        {/* DJ Console Base Frame */}
+        <rect
+          x="10"
+          y="45"
+          width="115"
+          height="65"
+          rx="12"
+          fill="url(#dj_body)"
+          stroke="#f472b6"
+          strokeWidth="2.5"
         />
 
-        {/* Top Cake Receptacle Opening for Candles / Sparklers */}
+        {/* LED Equalizer Bars */}
+        <line x1="22" y1="58" x2="22" y2="95" stroke="#ec4899" strokeWidth="4" strokeDasharray="3 2" />
+        <line x1="28" y1="58" x2="28" y2="95" stroke="#38bdf8" strokeWidth="4" strokeDasharray="3 2" />
+        <line x1="107" y1="58" x2="107" y2="95" stroke="#fde047" strokeWidth="4" strokeDasharray="3 2" />
+        <line x1="113" y1="58" x2="113" y2="95" stroke="#ec4899" strokeWidth="4" strokeDasharray="3 2" />
+
+        {/* Central Spinning Vinyl Platter */}
         <ellipse
           cx="67.5"
-          cy="16"
-          rx="32.5"
-          ry="8.5"
-          fill="url(#cake_hole)"
-          stroke="#f472b6"
+          cy="77"
+          rx="32"
+          ry="22"
+          fill="url(#vinyl_disc)"
+          stroke="#e2e8f0"
           strokeWidth="1.5"
         />
+        <circle cx="67.5" cy="77" r="8" fill="#f472b6" />
 
-        {/* Cream Frosting & Cherry Decor */}
-        <circle cx="35" cy="15" r="4" fill="#ffffff" />
-        <circle cx="67.5" cy="24" r="5" fill="#ffffff" />
-        <circle cx="100" cy="15" r="4" fill="#ffffff" />
+        {/* Top Receptacle Opening for Pháo Bông / Sparklers */}
+        <ellipse
+          cx="67.5"
+          cy="46"
+          rx="34"
+          ry="9"
+          fill="url(#dj_hole)"
+          stroke="#38bdf8"
+          strokeWidth="2"
+        />
 
-        <circle cx="35" cy="12" r="3" fill="#ef4444" />
-        <circle cx="67.5" cy="21" r="4" fill="#ef4444" />
-        <circle cx="100" cy="12" r="3" fill="#ef4444" />
+        {/* DJ Buttons & Knobs */}
+        <circle cx="38" cy="55" r="3" fill="#38bdf8" />
+        <circle cx="48" cy="55" r="3" fill="#fde047" />
+        <circle cx="87" cy="55" r="3" fill="#ec4899" />
+        <circle cx="97" cy="55" r="3" fill="#38bdf8" />
+
+        {/* Pitch Fader Slider */}
+        <rect x="58" y="98" width="19" height="4" rx="2" fill="#e2e8f0" />
       </g>
     </svg>
   );
@@ -193,7 +199,7 @@ function JossBox({ onClick, disabled, isRemix }: JossBoxProps) {
           boxShadow: 'inset 0 2px 6px #000'
         }}
       />
-      <div className="px-1 font-bold text-amber-300">{isRemix ? '🎂' : '福'}</div>
+      <div className="px-1 font-bold text-amber-300">{isRemix ? '🎧' : '福'}</div>
     </button>
   );
 }
@@ -388,25 +394,25 @@ export default function CenserSection({ sticks, onAddStick, onClearCenser, onOpe
 
   return (
     <div className="relative pt-2">
-      {/* Censer / Birthday Cake Section */}
+      {/* Censer / DJ Turntable Console Section */}
       <div
         className="flex justify-center shrink-0 h-[28vh] md:h-[32vh] perspective select-none pointer-events-none [&>*]:pointer-events-auto"
         ref={containerRef}
       >
-        {/* Left Incense / Candle Box */}
+        {/* Left Incense / Sparkler Box */}
         <JossBox
           isRemix={isRemix}
           onClick={(e) => setLeftHand(updateHandStick(leftHand, e.currentTarget, containerRef.current))}
         />
 
-        {/* Center Base: Traditional Censer in Basic Mode vs Birthday Cake in Remix Mode */}
+        {/* Center Base: Traditional Censer in Basic Mode vs DJ Turntable Console in Remix Mode */}
         <div
           className="relative h-full !pointer-events-none transition-all duration-500"
           ref={censerRef}
           aria-describedby="explain"
         >
           {isRemix ? (
-            <BirthdayCakeSVG onKnock={playKnockSound} />
+            <DJTurntableSVG onKnock={playKnockSound} />
           ) : (
             <CenserSVG onKnock={playKnockSound} />
           )}
@@ -417,7 +423,7 @@ export default function CenserSection({ sticks, onAddStick, onClearCenser, onOpe
           </div>
 
           <div
-            aria-label="Incense / Candle receptacle"
+            aria-label="Incense / Sparkler receptacle"
             className="absolute top-0"
             style={{
               left: `${100 * yRatio}%`,
@@ -435,20 +441,20 @@ export default function CenserSection({ sticks, onAddStick, onClearCenser, onOpe
           </div>
         </div>
 
-        {/* Right Incense / Candle Box */}
+        {/* Right Incense / Sparkler Box */}
         <JossBox
           isRemix={isRemix}
           onClick={(e) => setRightHand(updateHandStick(rightHand, e.currentTarget, containerRef.current))}
         />
 
-        {/* Hand Dispensed Sticks / Candles */}
+        {/* Hand Dispensed Sticks / Sparklers */}
         {leftHand.num > 0 && <JossStick pos={leftHand} draggable onDrop={handleDrop} isRemix={isRemix} />}
         {rightHand.num > 0 && <JossStick pos={rightHand} draggable onDrop={handleDrop} isRemix={isRemix} />}
       </div>
 
       {/* Main Action Buttons */}
       <div className="flex items-center justify-center gap-3 mt-2 mb-2 z-30 relative pointer-events-auto">
-        {/* Button 1: Dọn Bát Hương / Dọn Bánh Sinh Nhật */}
+        {/* Button 1: Dọn Bát Hương / Dọn Bàn DJ */}
         <button
           onClick={onClearCenser}
           className={`px-4 py-2 rounded-xl text-xs font-bold border backdrop-blur-md shadow-xl transition-all cursor-pointer hover:scale-105 active:scale-95 ${
@@ -456,10 +462,10 @@ export default function CenserSection({ sticks, onAddStick, onClearCenser, onOpe
               ? 'bg-purple-950/90 text-pink-300 border-pink-500/50 hover:bg-fuchsia-900/90 hover:border-pink-400'
               : 'bg-stone-900/90 text-amber-300 border-amber-500/40 hover:bg-amber-950/90 hover:border-amber-400'
           }`}
-          title="Dọn dẹp nén nhang / nến pháo bông"
+          title="Dọn dẹp nén nhang / pháo bông"
         >
-          <span className="text-base">{isRemix ? '🎂' : '🧹'}</span>
-          <span>{isRemix ? `Dọn Bánh Sinh Nhật (${sticks.length})` : `Dọn Bát Hương (${sticks.length})`}</span>
+          <span className="text-base">{isRemix ? '🎧' : '🧹'}</span>
+          <span>{isRemix ? `Dọn Bàn DJ (${sticks.length})` : `Dọn Bát Hương (${sticks.length})`}</span>
         </button>
 
         {/* Button 2: Nút Khấn Nguyện */}
@@ -477,12 +483,12 @@ export default function CenserSection({ sticks, onAddStick, onClearCenser, onOpe
             hasActiveIncense
               ? 'Bấm để dâng lời khấn nguyện'
               : isRemix
-              ? 'Vui lòng bấm nút 「🎂」 hai bên để cắm nến pháo bông trước khi khấn nguyện'
+              ? 'Vui lòng bấm nút 「🎧」 hai bên để cắm pháo bông trước khi khấn nguyện'
               : 'Vui lòng bấm nút 「福」 hai bên để thắp nhang trước khi khấn nguyện'
           }
         >
-          <span className="text-base">{hasActiveIncense ? (isRemix ? '🎂' : '✍️') : '🔒'}</span>
-          <span>{hasActiveIncense ? 'Khấn Nguyện' : isRemix ? 'Cần Cắm Nến Pháo' : 'Chưa Thắp Hương'}</span>
+          <span className="text-base">{hasActiveIncense ? (isRemix ? '🎧' : '✍️') : '🔒'}</span>
+          <span>{hasActiveIncense ? 'Khấn Nguyện' : isRemix ? 'Cần Thắp Pháo DJ' : 'Chưa Thắp Hương'}</span>
         </button>
       </div>
     </div>
