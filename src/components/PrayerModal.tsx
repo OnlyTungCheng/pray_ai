@@ -1,13 +1,23 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
+import type { FormEvent } from 'react';
+import type { Wish } from '../types';
 
-export default function PrayerModal({ isOpen, onClose, onAddWish, currentDeityName, hasActiveIncense }) {
+interface PrayerModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  onAddWish: (wish: Wish) => void;
+  currentDeityName: string;
+  hasActiveIncense: boolean;
+}
+
+export default function PrayerModal({ isOpen, onClose, onAddWish, currentDeityName, hasActiveIncense }: PrayerModalProps) {
   const [wishText, setWishText] = useState('');
   const [devName, setDevName] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
 
   if (!isOpen) return null;
 
-  const handleSubmit = (e) => {
+  const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
     setErrorMessage('');
 

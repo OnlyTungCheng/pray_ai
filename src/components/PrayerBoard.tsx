@@ -1,4 +1,6 @@
-import React, { useState, useRef, useEffect } from 'react';
+import { useState, useRef } from 'react';
+import type { FormEvent } from 'react';
+import type { Wish } from '../types';
 
 const QUICK_TAGS = [
   '🚀 Deploy 0 Bug',
@@ -9,16 +11,23 @@ const QUICK_TAGS = [
   '🧹 Clean Code Refactor'
 ];
 
-export default function PrayerBoard({ onAddWish, wishes = [], currentDeityName, hasActiveIncense }) {
+interface PrayerBoardProps {
+  onAddWish: (wish: Wish) => void;
+  wishes?: Wish[];
+  currentDeityName: string;
+  hasActiveIncense: boolean;
+}
+
+export default function PrayerBoard({ onAddWish, wishes = [], currentDeityName, hasActiveIncense }: PrayerBoardProps) {
   const [wishText, setWishText] = useState('');
   const [devName, setDevName] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
 
-  const inputSectionRef = useRef(null);
+  const inputSectionRef = useRef<HTMLElement>(null);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
     setErrorMessage('');
     setSuccessMessage('');
@@ -51,7 +60,7 @@ export default function PrayerBoard({ onAddWish, wishes = [], currentDeityName, 
     }, 400);
   };
 
-  const handleSelectTag = (tag) => {
+  const handleSelectTag = (tag: string) => {
     setWishText((prev) => (prev ? `${prev} ${tag}` : tag));
   };
 

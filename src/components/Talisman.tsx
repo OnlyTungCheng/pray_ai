@@ -1,11 +1,11 @@
-import React, { useState, useRef } from 'react';
+import { useState, useRef } from 'react';
 
 const containerStyle = { perspectiveOrigin: 'right' };
 const topShadowStyle = { background: 'radial-gradient(farthest-side at top, rgb(0 0 0 / 0.3), transparent)' };
 
 export default function Talisman() {
   const [isExpanded, setIsExpanded] = useState(false);
-  const talismanRef = useRef(null);
+  const talismanRef = useRef<HTMLButtonElement>(null);
 
   const toggleExpand = () => {
     setIsExpanded((prev) => !prev);

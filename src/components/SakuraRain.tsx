@@ -1,7 +1,12 @@
-import React, { useEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 
-export default function SakuraRain({ isActive, onComplete }) {
-  const canvasRef = useRef(null);
+interface SakuraRainProps {
+  isActive: boolean;
+  onComplete?: () => void;
+}
+
+export default function SakuraRain({ isActive, onComplete }: SakuraRainProps) {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
     if (!isActive) return;
@@ -9,7 +14,8 @@ export default function SakuraRain({ isActive, onComplete }) {
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
-    let animationFrameId;
+    if (!ctx) return;
+    let animationFrameId: number;
 
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
@@ -22,13 +28,24 @@ export default function SakuraRain({ isActive, onComplete }) {
 
     // Create 70 falling peach blossom petals (Hoa Đào Rơi)
     const petalsCount = 70;
-    const petals = [];
+    const petals: Petal[] = [];
     let time = 0;
 
     class Petal {
-      constructor() {
-        this.x = Math.random() * canvas.width;
-        this.y = Math.random() * -canvas.height * 0.5;
+      x: number;
+      y: number;
+      size: number;
+      vy: number;
+      vx: number;
+      rotation: number;
+      vRot: number;
+      opacity: number;
+      color: string;
+      seed: number;
+
+      constructor(canvasWidth: number, canvasHeight: number) {
+        this.x = Math.random() * canvasWidth;
+        this.y = Math.random() * -canvasHeight * 0.5;
         this.size = Math.random() * 12 + 10;
         this.vy = Math.random() * 1.5 + 1.0; // Slow falling speed
         this.vx = Math.random() * 0.8 - 0.4;
@@ -45,7 +62,7 @@ export default function SakuraRain({ isActive, onComplete }) {
         this.rotation += this.vRot;
       }
 
-      draw(ctx) {
+      draw(ctx: CanvasRenderingContext2D) {
         ctx.save();
         ctx.translate(this.x, this.y);
         ctx.rotate(this.rotation);
@@ -72,7 +89,7 @@ export default function SakuraRain({ isActive, onComplete }) {
     }
 
     for (let i = 0; i < petalsCount; i++) {
-      petals.push(new Petal());
+      petals.push(new Petal(canvas.width, canvas.height));
     }
 
     const render = () => {

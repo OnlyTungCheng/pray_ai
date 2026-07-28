@@ -1,13 +1,14 @@
-import React, { useEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 
 export default function SmokeCanvas() {
-  const canvasRef = useRef(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
-    let animationFrameId;
+    if (!ctx) return;
+    let animationFrameId: number;
 
     const updateSize = () => {
       if (canvas.parentElement) {
@@ -18,11 +19,21 @@ export default function SmokeCanvas() {
     updateSize();
     window.addEventListener('resize', updateSize);
 
-    let particles = [];
+    let particles: SmokeParticle[] = [];
     const maxParticles = 90;
 
     class SmokeParticle {
-      constructor(x, y) {
+      x: number;
+      y: number;
+      size: number;
+      speedY: number;
+      speedX: number;
+      opacity: number;
+      rotation: number;
+      rotationSpeed: number;
+      growth: number;
+
+      constructor(x: number, y: number) {
         this.x = x;
         this.y = y;
         this.size = Math.random() * 5 + 3;
@@ -42,7 +53,7 @@ export default function SmokeCanvas() {
         this.rotation += this.rotationSpeed;
       }
 
-      draw(ctx) {
+      draw(ctx: CanvasRenderingContext2D) {
         if (this.opacity <= 0) return;
         ctx.save();
         ctx.translate(this.x, this.y);

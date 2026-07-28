@@ -1,11 +1,11 @@
-import React, { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 
 export default function BgmPlayer({ themeMode, onToggleTheme }) {
   const [isPlaying, setIsPlaying] = useState(false);
   const [volume, setVolume] = useState(0.5);
   const [hasInteracted, setHasInteracted] = useState(false);
 
-  const audioRef = useRef(null);
+  const audioRef = useRef<HTMLAudioElement>(null);
 
   // Source audio selection
   const audioSrc = themeMode === 'remix' ? '/remix.mp3' : '/audio.mp3';

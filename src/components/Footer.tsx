@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
+import type { MouseEvent } from 'react';
 
 export default function Footer() {
-  const [activeTab, setActiveTab] = useState(null);
+  const [activeTab, setActiveTab] = useState<'terms' | 'privacy' | null>(null);
 
-  const toggleTab = (tab, e) => {
+  const toggleTab = (tab: 'terms' | 'privacy', e: MouseEvent) => {
     e.preventDefault();
     setActiveTab((prev) => (prev === tab ? null : tab));
   };

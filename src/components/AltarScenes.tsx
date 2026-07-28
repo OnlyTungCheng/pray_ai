@@ -1,20 +1,26 @@
-import React from 'react';
+import type { CSSProperties } from 'react';
 
-const animStyle = {
+const animStyle: CSSProperties = {
   transform: 'scale(calc(0.3 + 0.7 * var(--visRatio, 1))) rotateX(5deg)',
   transformOrigin: 'bottom',
   filter: 'grayscale(var(--hidRatio, 0))',
   transition: 'filter 0.2s linear, transform 0.2s linear'
 };
 
-const textGradientStyle = {
+const textGradientStyle: CSSProperties = {
   background: 'repeating-linear-gradient(-80deg, #fa0 20px, #a50 40px, #fa0 60px)',
   WebkitBackgroundClip: 'text',
   WebkitTextFillColor: 'transparent',
   color: 'transparent'
 };
 
-export default function AltarScenes({ scene }) {
+type AltarScene = 'ground' | 'wealth' | 'guan' | 'buddha' | 'bao';
+
+interface AltarScenesProps {
+  scene: AltarScene;
+}
+
+export default function AltarScenes({ scene }: AltarScenesProps) {
   return (
     <div
       className="flex justify-center pb-[25vh] -z-10"

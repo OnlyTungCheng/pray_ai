@@ -1,8 +1,8 @@
 // Wooden Fish (木魚) sound generator using Web Audio API
-let audioCtx = null;
-let knockAudio = null;
+let audioCtx: AudioContext | null = null;
+let knockAudio: HTMLAudioElement | null = null;
 
-export const playKnockSound = () => {
+export const playKnockSound = (): void => {
   // Try loading real knock.aac if available, fallback to Web Audio synthesis
   try {
     if (!knockAudio) {
@@ -21,11 +21,12 @@ export const playKnockSound = () => {
   }
 };
 
-function synthWoodenFish() {
+function synthWoodenFish(): void {
   try {
     if (!audioCtx) {
-      const AudioContext = window.AudioContext || window.webkitAudioContext;
-      audioCtx = new AudioContext();
+      const AudioContextClass =
+        window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
+      audioCtx = new AudioContextClass();
     }
     if (audioCtx.state === 'suspended') {
       audioCtx.resume();

@@ -1,6 +1,8 @@
-import React from 'react';
+interface InstructionsProps {
+  totalBurned: number;
+}
 
-export default function Instructions({ totalBurned }) {
+export default function Instructions({ totalBurned }: InstructionsProps) {
   return (
     <>
       <div role="separator" className="mx-auto max-w-5xl w-full p-4 py-8">

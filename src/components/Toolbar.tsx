@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 
-const devOfferings = {
+const devOfferings: Record<string, { icon: string; name: string }> = {
   coffee: { icon: '☕', name: 'Cà Phê Tỉnh Táo' },
   code: { icon: '💻', name: 'Clean Code' },
   energy: { icon: '⚡', name: 'Tăng Lực' },
@@ -9,7 +9,11 @@ const devOfferings = {
   pray: { icon: '🙏', name: 'Cầu Nguyện' }
 };
 
-function FullscreenIcon({ className }) {
+interface FullscreenIconProps {
+  className?: string;
+}
+
+function FullscreenIcon({ className }: FullscreenIconProps) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -28,8 +32,15 @@ function FullscreenIcon({ className }) {
   );
 }
 
-export default function Toolbar({ emojiCounts, onAddEmoji, onNextDeity, onOpenPrayerModal }) {
-  const [activeFloatingEmoji, setActiveFloatingEmoji] = useState(null);
+interface ToolbarProps {
+  emojiCounts: Record<string, number>;
+  onAddEmoji: (key: string) => void;
+  onNextDeity: () => void;
+  onOpenPrayerModal?: () => void;
+}
+
+export default function Toolbar({ emojiCounts, onAddEmoji, onNextDeity, onOpenPrayerModal }: ToolbarProps) {
+  const [activeFloatingEmoji, setActiveFloatingEmoji] = useState<string | null>(null);
   const [isFullscreen, setIsFullscreen] = useState(false);
 
   useEffect(() => {
@@ -53,7 +64,7 @@ export default function Toolbar({ emojiCounts, onAddEmoji, onNextDeity, onOpenPr
     document.getElementById('prayer-input-section')?.scrollIntoView({ behavior: 'smooth' });
   };
 
-  const formatCount = (count) => {
+  const formatCount = (count: number) => {
     if (!count) return 0;
     return count > 99999 ? `${Math.floor(count / 1000)}K` : count;
   };

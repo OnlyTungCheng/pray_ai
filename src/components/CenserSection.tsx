@@ -1,6 +1,7 @@
 import React, { useState, useRef, useCallback, useEffect } from 'react';
 import { playKnockSound } from '../utils/sound';
 import RealSmokeEngine from './RealSmokeEngine';
+import type { IncenseStick } from '../types';
 
 const yRatio = 21 / 135;
 const wRatio = 94 / 135;
@@ -8,7 +9,12 @@ const topRatio = 153 / 259;
 const hRatio = 84 / 259;
 const receptacleHRatio = 170 / 259;
 
-function CenserSVG({ onKnock, isRemix }) {
+interface CenserSVGProps {
+  onKnock: () => void;
+  isRemix?: boolean;
+}
+
+function CenserSVG({ onKnock, isRemix }: CenserSVGProps) {
   return (
     <svg
       role="img"
@@ -77,7 +83,13 @@ function CenserSVG({ onKnock, isRemix }) {
   );
 }
 
-function JossBox({ onClick, disabled, isRemix }) {
+interface JossBoxProps {
+  onClick: (e: React.MouseEvent<HTMLButtonElement>) => void;
+  disabled?: boolean;
+  isRemix?: boolean;
+}
+
+function JossBox({ onClick, disabled, isRemix }: JossBoxProps) {
   return (
     <button
       aria-label="Incense dispenser"
@@ -89,10 +101,9 @@ function JossBox({ onClick, disabled, isRemix }) {
           ? 'linear-gradient(90deg, #701a75, #ec4899, #701a75)'
           : 'linear-gradient(90deg, #451a03, #78350f, #451a03)',
         transform: 'rotateX(var(--my-rotate, 90deg))'
-      }}
+      } as React.CSSProperties}
       onClick={onClick}
       disabled={disabled}
-      translate="no"
     >
       <div
         className="flex-1 self-stretch rounded min-h-4"
@@ -108,21 +119,28 @@ function JossBox({ onClick, disabled, isRemix }) {
   );
 }
 
+interface JossStickProps {
+  pos: IncenseStick;
+  draggable?: boolean;
+  onDrop?: (pos: IncenseStick, el: HTMLDivElement | null) => boolean;
+  isRemix?: boolean;
+}
+
 let dragStartX = 0;
 let dragStartY = 0;
 let isTouch = false;
 
-function JossStick({ pos, draggable, onDrop, isRemix }) {
+function JossStick({ pos, draggable, onDrop, isRemix }: JossStickProps) {
   const initialLeft = useRef(0);
   const initialTop = useRef(0);
-  const stickRefs = useRef([]);
+  const stickRefs = useRef<(HTMLDivElement | null)[]>([]);
 
   const ttlSeconds = Math.min(((pos.exp || 0) - Date.now()) / 1000, 3600);
   const isBurning = ttlSeconds > 0;
 
-  const style = {
-    left: initialLeft.current || `${100 * pos.x}%`,
-    top: initialTop.current || `${100 * pos.y}%`,
+  const style: React.CSSProperties & Record<string, string | number> = {
+    left: initialLeft.current ? `${initialLeft.current}px` : `${100 * pos.x}%`,
+    top: initialTop.current ? `${initialTop.current}px` : `${100 * pos.y}%`,
     transform: `translate(-50%, -100%) scale(0.65) rotateZ(${4 * pos.z - 2}deg)`,
     '--ttl': pos.exp ? `${ttlSeconds}s` : '0s',
     '--progress': pos.exp ? Math.max(ttlSeconds / 3600, 0) : 1,
@@ -133,11 +151,11 @@ function JossStick({ pos, draggable, onDrop, isRemix }) {
 
   const className = `joss ${draggable ? 'draggable ' : ''}${isBurning ? 'burn ' : ''}`;
 
-  const handleMove = useCallback((e) => {
+  const handleMove = useCallback((e: MouseEvent | TouchEvent) => {
     e.preventDefault();
     stickRefs.current.forEach((el) => {
       if (el) {
-        const point = 'touches' in e ? e.touches[0] : e;
+        const point = 'touches' in e ? e.touches[0] : (e as MouseEvent);
         el.style.left = `${initialLeft.current + (point.screenX - dragStartX)}px`;
         el.style.top = `${initialTop.current + (point.screenY - dragStartY)}px`;
       }
@@ -145,11 +163,13 @@ function JossStick({ pos, draggable, onDrop, isRemix }) {
   }, []);
 
   const handleEnd = useCallback(() => {
-    window.removeEventListener(isTouch ? 'touchmove' : 'mousemove', handleMove, { passive: false });
+    window.removeEventListener(isTouch ? 'touchmove' : 'mousemove', handleMove);
     const primaryEl = stickRefs.current[0];
     if (onDrop?.(pos, primaryEl)) {
-      initialLeft.current = primaryEl.offsetLeft;
-      initialTop.current = primaryEl.offsetTop;
+      if (primaryEl) {
+        initialLeft.current = primaryEl.offsetLeft;
+        initialTop.current = primaryEl.offsetTop;
+      }
     } else {
       stickRefs.current.forEach((el) => {
         if (el) {
@@ -164,20 +184,22 @@ function JossStick({ pos, draggable, onDrop, isRemix }) {
   useEffect(() => {
     return () => {
       window.removeEventListener(isTouch ? 'touchend' : 'mouseup', handleEnd);
-      window.removeEventListener(isTouch ? 'touchmove' : 'mousemove', handleMove, { passive: false });
+      window.removeEventListener(isTouch ? 'touchmove' : 'mousemove', handleMove);
     };
   }, [handleEnd, handleMove]);
 
-  const handleStart = useCallback((e) => {
+  const handleStart = useCallback((e: React.MouseEvent | React.TouchEvent) => {
     if (isTouch && e.type !== 'touchstart') return;
     if (e.type === 'touchstart') isTouch = true;
-    const point = 'touches' in e ? e.touches[0] : e;
+    const point = 'touches' in e ? (e as React.TouchEvent).touches[0] : (e as React.MouseEvent);
     dragStartX = point.screenX;
     dragStartY = point.screenY;
 
     const primaryEl = stickRefs.current[0];
-    initialLeft.current = primaryEl.offsetLeft;
-    initialTop.current = primaryEl.offsetTop;
+    if (primaryEl) {
+      initialLeft.current = primaryEl.offsetLeft;
+      initialTop.current = primaryEl.offsetTop;
+    }
 
     stickRefs.current.forEach((el) => {
       if (el) el.style.transition = '';
@@ -194,7 +216,7 @@ function JossStick({ pos, draggable, onDrop, isRemix }) {
           role="img"
           className={className}
           style={{ ...style, marginLeft: 4, marginTop: 2 }}
-          ref={(el) => (stickRefs.current[1] = el)}
+          ref={(el) => { stickRefs.current[1] = el; }}
         >
           {isBurning && <div className="joss-ember-tip" />}
         </div>
@@ -204,7 +226,7 @@ function JossStick({ pos, draggable, onDrop, isRemix }) {
           role="img"
           className={className}
           style={{ ...style, marginLeft: -4, marginTop: 2 }}
-          ref={(el) => (stickRefs.current[2] = el)}
+          ref={(el) => { stickRefs.current[2] = el; }}
         >
           {isBurning && <div className="joss-ember-tip" />}
         </div>
@@ -214,28 +236,35 @@ function JossStick({ pos, draggable, onDrop, isRemix }) {
         aria-label="incense"
         className={`${className}${draggable ? 'cursor-grab ' : ''}`}
         style={style}
-        ref={(el) => (stickRefs.current[0] = el)}
+        ref={(el) => { stickRefs.current[0] = el; }}
         onMouseDown={draggable ? handleStart : undefined}
         onTouchStart={draggable ? handleStart : undefined}
       >
-        {/* Glowing Ember Tip / Sparkler Tip */}
         {isBurning && <div className="joss-ember-tip" />}
       </div>
     </>
   );
 }
 
-export default function CenserSection({ sticks, onAddStick, onClearCenser, onOpenPrayerModal, themeMode }) {
-  const [leftHand, setLeftHand] = useState({ x: 0, y: 0, z: 0, num: 0 });
-  const [rightHand, setRightHand] = useState({ x: 0, y: 0, z: 0, num: 0 });
+interface CenserSectionProps {
+  sticks: IncenseStick[];
+  onAddStick: (stick: IncenseStick) => void;
+  onClearCenser: () => void;
+  onOpenPrayerModal: () => void;
+  themeMode?: string;
+}
 
-  const containerRef = useRef(null);
-  const censerRef = useRef(null);
+export default function CenserSection({ sticks, onAddStick, onClearCenser, onOpenPrayerModal, themeMode }: CenserSectionProps) {
+  const [leftHand, setLeftHand] = useState<IncenseStick>({ x: 0, y: 0, z: 0, num: 0 });
+  const [rightHand, setRightHand] = useState<IncenseStick>({ x: 0, y: 0, z: 0, num: 0 });
+
+  const containerRef = useRef<HTMLDivElement>(null);
+  const censerRef = useRef<HTMLDivElement>(null);
 
   const isRemix = themeMode === 'remix';
   const hasActiveIncense = sticks.length > 0;
 
-  const updateHandStick = (currentHand, buttonEl, containerEl) => {
+  const updateHandStick = (currentHand: IncenseStick, buttonEl: HTMLElement, containerEl: HTMLElement | null) => {
     const parentWidth = containerEl?.offsetWidth || 1;
     const parentHeight = containerEl?.offsetHeight || 1;
     const xPos = (buttonEl.offsetLeft + Math.ceil(buttonEl.offsetWidth / 2)) / parentWidth;
@@ -250,7 +279,7 @@ export default function CenserSection({ sticks, onAddStick, onClearCenser, onOpe
     }
   };
 
-  const handleDrop = useCallback((pos, draggedEl) => {
+  const handleDrop = useCallback((pos: IncenseStick, draggedEl: HTMLDivElement | null) => {
     if (!censerRef.current || !draggedEl) return false;
     const { offsetTop, offsetLeft, offsetWidth, offsetHeight } = censerRef.current;
 
@@ -263,7 +292,7 @@ export default function CenserSection({ sticks, onAddStick, onClearCenser, onOpe
       draggedEl.offsetTop - draggedEl.offsetHeight < offsetTop + (topRatio + hRatio) * offsetHeight;
 
     if (isInsideX && isInsideY) {
-      const newStick = {
+      const newStick: IncenseStick = {
         ...pos,
         x: relativeX,
         y: 0.97 + 0.03 * Math.random(),
