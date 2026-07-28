@@ -25,10 +25,11 @@ export default function RealSmokeEngine({ sticks, isRemix }: RealSmokeEngineProp
     updateSize();
     window.addEventListener('resize', updateSize);
 
-    let particles: (FluidSmokeParticle | SparklerFireworkParticle)[] = [];
+    let smokeParticles: FluidSmokeParticle[] = [];
+    let fireworkParticles: UltraFireworkParticle[] = [];
     let time = 0;
 
-    // 1. Traditional Incense Smoke Particle (Basic Theme)
+    // 1. Traditional Incense Smoke Particle (Basic Mode)
     class FluidSmokeParticle {
       x: number;
       y: number;
@@ -97,67 +98,83 @@ export default function RealSmokeEngine({ sticks, isRemix }: RealSmokeEngineProp
       }
     }
 
-    // 2. Sparkler Fireworks Particle (Remix Vinahouse Theme)
-    class SparklerFireworkParticle {
+    // 2. Photorealistic Additive-Blend Sparkler Firework Particle (Remix Mode)
+    class UltraFireworkParticle {
       x: number;
       y: number;
+      prevX: number;
+      prevY: number;
       vx: number;
       vy: number;
+      friction: number;
       gravity: number;
       size: number;
       life: number;
       maxLife: number;
       color: string;
+      spark: boolean;
 
       constructor(x: number, y: number) {
         this.x = x;
         this.y = y;
-        const angle = Math.random() * Math.PI * 2;
-        const speed = Math.random() * 4.5 + 1.5;
-        this.vx = Math.cos(angle) * speed;
-        this.vy = Math.sin(angle) * speed - Math.random() * 2;
-        this.gravity = 0.08;
-        this.size = Math.random() * 3.5 + 1.5;
-        this.life = 0;
-        this.maxLife = Math.random() * 35 + 20;
+        this.prevX = x;
+        this.prevY = y;
 
-        const colors = ['#fde047', '#f472b6', '#38bdf8', '#fb923c', '#ffffff', '#a855f7'];
+        // Fountain cone velocity
+        const angle = -Math.PI / 2 + (Math.random() - 0.5) * 1.4;
+        const speed = Math.random() * 7 + 2.5;
+        this.vx = Math.cos(angle) * speed;
+        this.vy = Math.sin(angle) * speed;
+
+        this.friction = 0.96;
+        this.gravity = 0.15;
+        this.size = Math.random() * 3 + 1.5;
+        this.life = 0;
+        this.maxLife = Math.random() * 40 + 20;
+
+        const colors = [
+          '#ffe066', '#ff66cc', '#38bdf8', '#ff944d',
+          '#ffffff', '#c084fc', '#4ade80'
+        ];
         this.color = colors[Math.floor(Math.random() * colors.length)];
+        this.spark = Math.random() < 0.4;
       }
 
       update() {
         this.life++;
+        this.prevX = this.x;
+        this.prevY = this.y;
+
+        this.vx *= this.friction;
+        this.vy *= this.friction;
+        this.vy += this.gravity;
+
         this.x += this.vx;
         this.y += this.vy;
-        this.vy += this.gravity;
-        this.vx *= 0.96;
-        this.size *= 0.95;
       }
 
       draw(ctx: CanvasRenderingContext2D) {
-        const opacity = 1 - this.life / this.maxLife;
-        if (opacity <= 0) return;
+        const opacity = Math.max(0, 1 - this.life / this.maxLife);
 
         ctx.save();
+        ctx.globalCompositeOperation = 'lighter'; // Additive blending for realistic glowing sparks!
         ctx.globalAlpha = opacity;
-        ctx.fillStyle = this.color;
-        ctx.shadowColor = this.color;
-        ctx.shadowBlur = 10;
 
+        // Sparkler Trail Line
         ctx.beginPath();
-        ctx.arc(this.x, this.y, Math.max(0.5, this.size), 0, Math.PI * 2);
-        ctx.fill();
+        ctx.moveTo(this.prevX, this.prevY);
+        ctx.lineTo(this.x, this.y);
+        ctx.strokeStyle = this.color;
+        ctx.lineWidth = this.size;
+        ctx.lineCap = 'round';
+        ctx.stroke();
 
-        // Star flare lines
-        if (Math.random() < 0.3) {
-          ctx.strokeStyle = '#ffffff';
-          ctx.lineWidth = 1;
+        // Glowing Star Flash at Spark Head
+        if (this.spark && Math.random() < 0.5) {
+          ctx.fillStyle = '#ffffff';
           ctx.beginPath();
-          ctx.moveTo(this.x - 4, this.y);
-          ctx.lineTo(this.x + 4, this.y);
-          ctx.moveTo(this.x, this.y - 4);
-          ctx.lineTo(this.x, this.y + 4);
-          ctx.stroke();
+          ctx.arc(this.x, this.y, this.size * 1.8, 0, Math.PI * 2);
+          ctx.fill();
         }
 
         ctx.restore();
@@ -177,25 +194,35 @@ export default function RealSmokeEngine({ sticks, isRemix }: RealSmokeEngineProp
         const tipY = rect.top + rect.height / 2 - canvasRect.top;
 
         if (isRemix) {
-          // Shoot out fireworks sparkler particles in Remix mode!
-          for (let k = 0; k < 3; k++) {
-            particles.push(new SparklerFireworkParticle(tipX, tipY));
+          // Shoot out 4 glowing sparkler particles per tip in Remix mode!
+          for (let k = 0; k < 4; k++) {
+            fireworkParticles.push(new UltraFireworkParticle(tipX, tipY));
           }
         } else {
           // Gentle incense smoke in Basic mode
-          if (particles.length < 140 && Math.random() < 0.7) {
-            particles.push(new FluidSmokeParticle(tipX, tipY));
+          if (smokeParticles.length < 140 && Math.random() < 0.7) {
+            smokeParticles.push(new FluidSmokeParticle(tipX, tipY));
           }
         }
       });
 
-      for (let i = particles.length - 1; i >= 0; i--) {
-        const p = particles[i];
-        p.update();
-        p.draw(ctx);
-
-        if (p.life >= p.maxLife || (p.opacity && p.opacity <= 0.003) || p.y < -50) {
-          particles.splice(i, 1);
+      if (isRemix) {
+        for (let i = fireworkParticles.length - 1; i >= 0; i--) {
+          const p = fireworkParticles[i];
+          p.update();
+          p.draw(ctx);
+          if (p.life >= p.maxLife || p.y > canvas.height + 20) {
+            fireworkParticles.splice(i, 1);
+          }
+        }
+      } else {
+        for (let i = smokeParticles.length - 1; i >= 0; i--) {
+          const p = smokeParticles[i];
+          p.update();
+          p.draw(ctx);
+          if (p.life >= p.maxLife || p.opacity <= 0.003 || p.y < -50) {
+            smokeParticles.splice(i, 1);
+          }
         }
       }
 
