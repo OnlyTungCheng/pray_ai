@@ -128,7 +128,7 @@ export default function TechDeities({ themeMode }: TechDeitiesProps) {
             </div>
           )}
 
-          {/* 3 Meditating Mascots - STRICTLY 100% IDENTICAL SIZE & SCALE */}
+          {/* 3 Meditating Mascots / Dân Chơi Đi Bar Mascots */}
           {DEITIES.map((deity) => {
             const displayName = isRemix
               ? deity.name.replace('Thần', 'Dân Chơi')
@@ -152,13 +152,13 @@ export default function TechDeities({ themeMode }: TechDeitiesProps) {
                   {isRemix ? '🕶️' : '🧘‍♂️'} {displayName}
                 </div>
 
-                {/* 100% Uniform Equal Height Mascot Image */}
+                {/* Mascot Image with Dân Chơi Party Overlay in Remix Mode */}
                 <div className="relative overflow-hidden w-full bg-stone-950 flex items-center justify-center">
                   <img
                     src={deity.statueImg}
                     alt={displayName}
                     className={`h-[24vh] md:h-[29vh] w-full object-cover brightness-110 contrast-105 ${
-                      isRemix ? 'animate-bounce' : ''
+                      isRemix ? 'animate-bounce hue-rotate-15 saturate-150' : ''
                     }`}
                     style={{
                       filter: isRemix
@@ -166,6 +166,21 @@ export default function TechDeities({ themeMode }: TechDeitiesProps) {
                         : `drop-shadow(0 0 25px ${deity.glowColor})`
                     }}
                   />
+
+                  {/* Dân Chơi Party Accessories Overlay (Mắt Kính Râm, Tai Nghe DJ & Ly Cocktail Đi Bar) */}
+                  {isRemix && (
+                    <>
+                      {/* Sunglasses Overlay */}
+                      <div className="absolute top-[28%] left-1/2 -translate-x-1/2 text-2xl md:text-4xl drop-shadow-[0_0_10px_rgba(0,0,0,0.9)] animate-pulse pointer-events-none">
+                        🕶️
+                      </div>
+
+                      {/* Party Cocktail Drink Badge */}
+                      <div className="absolute bottom-2 right-2 text-xl md:text-2xl drop-shadow-[0_0_12px_rgba(236,72,153,0.9)] animate-bounce pointer-events-none">
+                        🍸
+                      </div>
+                    </>
+                  )}
                 </div>
               </div>
             );
