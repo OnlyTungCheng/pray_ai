@@ -8,7 +8,7 @@ const topRatio = 153 / 259;
 const hRatio = 84 / 259;
 const receptacleHRatio = 170 / 259;
 
-function CenserSVG({ onKnock }) {
+function CenserSVG({ onKnock, isRemix }) {
   return (
     <svg
       role="img"
@@ -17,23 +17,27 @@ function CenserSVG({ onKnock }) {
       version="1.1"
       xmlns="http://www.w3.org/2000/svg"
       preserveAspectRatio="none"
-      className="h-full touch-manipulation drop-shadow-[0_8px_20px_rgba(0,0,0,0.6)]"
+      className={`h-full touch-manipulation transition-all duration-500 ${
+        isRemix
+          ? 'drop-shadow-[0_0_35px_rgba(236,72,153,0.9)] animate-pulse'
+          : 'drop-shadow-[0_8px_20px_rgba(0,0,0,0.6)]'
+      }`}
     >
       <defs>
         <radialGradient id="urn_br" cx="1" cy="0.2" r="1" fx="0.8" fy="0.8">
-          <stop offset="10%" stopColor="#d97706" />
-          <stop offset="100%" stopColor="#78350f" />
+          <stop offset="10%" stopColor={isRemix ? '#ec4899' : '#d97706'} />
+          <stop offset="100%" stopColor={isRemix ? '#701a75' : '#78350f'} />
         </radialGradient>
         <radialGradient id="urn_tl" cx="0" cy="0.2" r="1" fx="0.2" fy="0.4">
-          <stop offset="10%" stopColor="#fef08a" />
+          <stop offset="10%" stopColor={isRemix ? '#f472b6' : '#fef08a'} />
           <stop offset="100%" stopColor="transparent" />
         </radialGradient>
         <radialGradient id="urn_t" cx="0.5" cy="0" r="0.5" fx="0.5">
-          <stop offset="10%" stopColor="#fde047" />
+          <stop offset="10%" stopColor={isRemix ? '#38bdf8' : '#fde047'} />
           <stop offset="100%" stopColor="transparent" />
         </radialGradient>
         <radialGradient id="urn_hol" cx="0.5" cy="0.5" r="1" fx="0.5" fy="0.5">
-          <stop offset="10%" stopColor="#451a03" />
+          <stop offset="10%" stopColor={isRemix ? '#4c1d95' : '#451a03'} />
           <stop offset="100%" stopColor="#27272a" />
         </radialGradient>
       </defs>
@@ -73,13 +77,17 @@ function CenserSVG({ onKnock }) {
   );
 }
 
-function JossBox({ onClick, disabled }) {
+function JossBox({ onClick, disabled, isRemix }) {
   return (
     <button
       aria-label="Incense dispenser"
-      className="-z-10 flex flex-col items-center justify-end gap-2 p-1 text-[2.5vh] font-serif text-amber-500 h-1/3 self-end origin-bottom drop-shadow-2xl border-b-4 border-[#300] hover:[--my-rotate:84deg] active:[--my-rotate:50deg] rounded-sm transition-transform JossBox_anim__q9MLn"
+      className={`-z-10 flex flex-col items-center justify-end gap-2 p-1 text-[2.5vh] font-serif h-1/3 self-end origin-bottom drop-shadow-2xl border-b-4 hover:[--my-rotate:84deg] active:[--my-rotate:50deg] rounded-sm transition-all JossBox_anim__q9MLn ${
+        isRemix ? 'border-pink-900 text-pink-300' : 'border-[#300] text-amber-500'
+      }`}
       style={{
-        background: 'linear-gradient(90deg, #451a03, #78350f, #451a03)',
+        background: isRemix
+          ? 'linear-gradient(90deg, #701a75, #ec4899, #701a75)'
+          : 'linear-gradient(90deg, #451a03, #78350f, #451a03)',
         transform: 'rotateX(var(--my-rotate, 90deg))'
       }}
       onClick={onClick}
@@ -89,11 +97,13 @@ function JossBox({ onClick, disabled }) {
       <div
         className="flex-1 self-stretch rounded min-h-4"
         style={{
-          background: 'repeating-linear-gradient(90deg, #78350f, #f59e0b 3px, #451a03 5px)',
+          background: isRemix
+            ? 'repeating-linear-gradient(90deg, #701a75, #f472b6 3px, #4c1d95 5px)'
+            : 'repeating-linear-gradient(90deg, #78350f, #f59e0b 3px, #451a03 5px)',
           boxShadow: 'inset 0 2px 6px #000'
         }}
       />
-      <div className="px-1 font-bold text-amber-300">福</div>
+      <div className="px-1 font-bold text-amber-300">{isRemix ? '🎉' : '福'}</div>
     </button>
   );
 }
@@ -102,7 +112,7 @@ let dragStartX = 0;
 let dragStartY = 0;
 let isTouch = false;
 
-function JossStick({ pos, draggable, onDrop }) {
+function JossStick({ pos, draggable, onDrop, isRemix }) {
   const initialLeft = useRef(0);
   const initialTop = useRef(0);
   const stickRefs = useRef([]);
@@ -115,7 +125,10 @@ function JossStick({ pos, draggable, onDrop }) {
     top: initialTop.current || `${100 * pos.y}%`,
     transform: `translate(-50%, -100%) scale(0.65) rotateZ(${4 * pos.z - 2}deg)`,
     '--ttl': pos.exp ? `${ttlSeconds}s` : '0s',
-    '--progress': pos.exp ? Math.max(ttlSeconds / 3600, 0) : 1
+    '--progress': pos.exp ? Math.max(ttlSeconds / 3600, 0) : 1,
+    background: isRemix
+      ? 'linear-gradient(0deg, #38bdf8 0%, #ec4899 50%, #fde047 100%)'
+      : undefined
   };
 
   const className = `joss ${draggable ? 'draggable ' : ''}${isBurning ? 'burn ' : ''}`;
@@ -205,20 +218,21 @@ function JossStick({ pos, draggable, onDrop }) {
         onMouseDown={draggable ? handleStart : undefined}
         onTouchStart={draggable ? handleStart : undefined}
       >
-        {/* Glowing Ember Tip */}
+        {/* Glowing Ember Tip / Sparkler Tip */}
         {isBurning && <div className="joss-ember-tip" />}
       </div>
     </>
   );
 }
 
-export default function CenserSection({ sticks, onAddStick, onClearCenser, onOpenPrayerModal }) {
+export default function CenserSection({ sticks, onAddStick, onClearCenser, onOpenPrayerModal, themeMode }) {
   const [leftHand, setLeftHand] = useState({ x: 0, y: 0, z: 0, num: 0 });
   const [rightHand, setRightHand] = useState({ x: 0, y: 0, z: 0, num: 0 });
 
   const containerRef = useRef(null);
   const censerRef = useRef(null);
 
+  const isRemix = themeMode === 'remix';
   const hasActiveIncense = sticks.length > 0;
 
   const updateHandStick = (currentHand, buttonEl, containerEl) => {
@@ -266,27 +280,28 @@ export default function CenserSection({ sticks, onAddStick, onClearCenser, onOpe
 
   return (
     <div className="relative pt-2">
-      {/* Lowered Censer Section */}
+      {/* Censer / Sparkler Base Section */}
       <div
         className="flex justify-center shrink-0 h-[28vh] md:h-[32vh] perspective select-none pointer-events-none [&>*]:pointer-events-auto"
         ref={containerRef}
       >
-        {/* Left Incense Box */}
+        {/* Left Incense / Sparkler Box */}
         <JossBox
+          isRemix={isRemix}
           onClick={(e) => setLeftHand(updateHandStick(leftHand, e.currentTarget, containerRef.current))}
         />
 
-        {/* Center Censer Area */}
+        {/* Center Censer / Fireworks Base Area */}
         <div
           className="relative h-full !pointer-events-none transition-all duration-500"
           ref={censerRef}
           aria-describedby="explain"
         >
-          <CenserSVG onKnock={playKnockSound} />
+          <CenserSVG onKnock={playKnockSound} isRemix={isRemix} />
 
-          {/* Fluid Physics Canvas Smoke Engine */}
+          {/* Fluid Physics Canvas Engine (Smoke in Basic Mode / Sparkler Fireworks in Remix Mode) */}
           <div className="absolute -top-[50vh] left-0 w-full h-[calc(100%+50vh)] pointer-events-none z-25">
-            <RealSmokeEngine sticks={sticks} />
+            <RealSmokeEngine sticks={sticks} isRemix={isRemix} />
           </div>
 
           <div
@@ -302,46 +317,60 @@ export default function CenserSection({ sticks, onAddStick, onClearCenser, onOpe
               <JossStick
                 key={`${stick.x}_${stick.y}_${stick.z}_${stick.exp || idx}`}
                 pos={stick}
+                isRemix={isRemix}
               />
             ))}
           </div>
         </div>
 
-        {/* Right Incense Box */}
+        {/* Right Incense / Sparkler Box */}
         <JossBox
+          isRemix={isRemix}
           onClick={(e) => setRightHand(updateHandStick(rightHand, e.currentTarget, containerRef.current))}
         />
 
         {/* Hand Dispensed Sticks */}
-        {leftHand.num > 0 && <JossStick pos={leftHand} draggable onDrop={handleDrop} />}
-        {rightHand.num > 0 && <JossStick pos={rightHand} draggable onDrop={handleDrop} />}
+        {leftHand.num > 0 && <JossStick pos={leftHand} draggable onDrop={handleDrop} isRemix={isRemix} />}
+        {rightHand.num > 0 && <JossStick pos={rightHand} draggable onDrop={handleDrop} isRemix={isRemix} />}
       </div>
 
-      {/* Main Action Buttons Directly Under the Lowered Censer */}
+      {/* Main Action Buttons */}
       <div className="flex items-center justify-center gap-3 mt-2 mb-2 z-30 relative pointer-events-auto">
-        {/* Button 1: Dọn Bát Hương */}
+        {/* Button 1: Dọn Bát Hương / Dọn Pháo Bông */}
         <button
           onClick={onClearCenser}
-          className="px-4 py-2 rounded-xl bg-stone-900/90 hover:bg-amber-950/90 text-amber-300 text-xs font-bold border border-amber-500/40 hover:border-amber-400 flex items-center gap-2 backdrop-blur-md shadow-xl transition-all cursor-pointer hover:scale-105 active:scale-95"
-          title="Dọn dẹp toàn bộ nén nhang trong bát hương"
+          className={`px-4 py-2 rounded-xl text-xs font-bold border backdrop-blur-md shadow-xl transition-all cursor-pointer hover:scale-105 active:scale-95 ${
+            isRemix
+              ? 'bg-purple-950/90 text-pink-300 border-pink-500/50 hover:bg-fuchsia-900/90 hover:border-pink-400'
+              : 'bg-stone-900/90 text-amber-300 border-amber-500/40 hover:bg-amber-950/90 hover:border-amber-400'
+          }`}
+          title="Dọn dẹp toàn bộ nén nhang / pháo bông"
         >
-          <span className="text-base">🧹</span>
-          <span>Dọn Bát Hương ({sticks.length})</span>
+          <span className="text-base">{isRemix ? '🎆' : '🧹'}</span>
+          <span>{isRemix ? `Dọn Pháo Bông (${sticks.length})` : `Dọn Bát Hương (${sticks.length})`}</span>
         </button>
 
-        {/* Button 2: Nút Khấn Nguyện (Chỉ bấm được khi ĐÃ THẮP HƯƠNG) */}
+        {/* Button 2: Nút Khấn Nguyện */}
         <button
           onClick={hasActiveIncense ? onOpenPrayerModal : undefined}
           disabled={!hasActiveIncense}
           className={`px-5 py-2 rounded-xl font-extrabold text-xs md:text-sm shadow-xl flex items-center gap-2 transition-all ${
             hasActiveIncense
-              ? 'bg-gradient-to-r from-amber-500 via-orange-500 to-amber-600 hover:from-amber-400 hover:to-orange-400 text-stone-950 shadow-amber-500/50 hover:scale-105 active:scale-95 cursor-pointer border border-white/60 animate-pulse'
+              ? isRemix
+                ? 'bg-gradient-to-r from-fuchsia-600 via-pink-500 to-purple-600 hover:from-fuchsia-500 text-white shadow-pink-500/50 hover:scale-105 active:scale-95 cursor-pointer border border-pink-300 animate-pulse'
+                : 'bg-gradient-to-r from-amber-500 via-orange-500 to-amber-600 hover:from-amber-400 hover:to-orange-400 text-stone-950 shadow-amber-500/50 hover:scale-105 active:scale-95 cursor-pointer border border-white/60 animate-pulse'
               : 'bg-stone-800 text-stone-500 border border-stone-700 cursor-not-allowed opacity-60'
           }`}
-          title={hasActiveIncense ? "Bấm để dâng lời khấn nguyện" : "Vui lòng bấm nút 「福」 hai bên để thắp nhang vào bát hương trước khi khấn nguyện"}
+          title={
+            hasActiveIncense
+              ? 'Bấm để dâng lời khấn nguyện'
+              : isRemix
+              ? 'Vui lòng bấm nút 「🎉」 hai bên để thắp pháo bông trước khi khấn nguyện'
+              : 'Vui lòng bấm nút 「福」 hai bên để thắp nhang trước khi khấn nguyện'
+          }
         >
-          <span className="text-base">{hasActiveIncense ? '✍️' : '🔒'}</span>
-          <span>{hasActiveIncense ? 'Khấn Nguyện' : 'Chưa Thắp Hương'}</span>
+          <span className="text-base">{hasActiveIncense ? (isRemix ? '🎆' : '✍️') : '🔒'}</span>
+          <span>{hasActiveIncense ? 'Khấn Nguyện' : isRemix ? 'Cần Bắn Pháo Bông' : 'Chưa Thắp Hương'}</span>
         </button>
       </div>
     </div>

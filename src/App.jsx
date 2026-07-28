@@ -115,12 +115,13 @@ export default function App() {
         {/* 1. Tượng Thần Dev (Claude Code, Codex, Kiro) trong Miếu Thờ */}
         <TechDeities themeMode={themeMode} />
 
-        {/* 2. Bát Hương & Khói Nhang + Nút Dọn Bát Hương & Nút Khấn Nguyện */}
+        {/* 2. Bát Hương / Bán Pháo Bông + Nút Dọn Bát Hương & Nút Khấn Nguyện */}
         <CenserSection
           sticks={sticks}
           onAddStick={handleAddStick}
           onClearCenser={handleClearCenser}
           onOpenPrayerModal={() => setIsPrayerModalOpen(true)}
+          themeMode={themeMode}
         />
       </main>
     </div>
