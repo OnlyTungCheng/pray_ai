@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import type { FormEvent } from 'react';
-import type { Wish } from '../types';
+import type { Wish } from '../../types';
 
 interface PrayerModalProps {
   isOpen: boolean;

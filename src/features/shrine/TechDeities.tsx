@@ -1,4 +1,4 @@
-import type { Deity } from '../types';
+import type { Deity } from '../../types';
 
 export const DEITIES: Deity[] = [
   {

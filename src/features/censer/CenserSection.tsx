@@ -1,8 +1,8 @@
 import { useState, useRef, useCallback, useEffect } from 'react';
 import type { MouseEvent as ReactMouseEvent, TouchEvent as ReactTouchEvent, CSSProperties } from 'react';
-import { playKnockSound } from '../utils/sound';
+import { playKnockSound } from '../../utils/sound';
 import RealSmokeEngine from './RealSmokeEngine';
-import type { IncenseStick } from '../types';
+import type { IncenseStick } from '../../types';
 
 const yRatio = 21 / 135;
 const wRatio = 94 / 135;
