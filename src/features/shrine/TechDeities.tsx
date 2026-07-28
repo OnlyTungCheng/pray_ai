@@ -9,8 +9,8 @@ export const DEITIES: PartyDeity[] = [
     id: 'codex',
     name: 'Thần Codex',
     title: 'Speed & Matrix Gen',
-    statueImg: '/codex_chibi.jpg',
-    partyImg: '/codex_party.jpg',
+    statueImg: '/codex_chibi.jpg?v=2',
+    partyImg: '/codex_party.jpg?v=2',
     glowColor: 'rgba(16, 185, 129, 0.8)',
     borderColor: 'border-emerald-400',
     tagBg: 'bg-emerald-500 text-stone-950 border-emerald-300'
@@ -19,8 +19,8 @@ export const DEITIES: PartyDeity[] = [
     id: 'claude',
     name: 'Thần Claude',
     title: 'Architecture & Logic',
-    statueImg: '/claude_chibi.jpg',
-    partyImg: '/claude_party.jpg',
+    statueImg: '/claude_chibi.jpg?v=2',
+    partyImg: '/claude_party.jpg?v=2',
     glowColor: 'rgba(245, 158, 11, 0.9)',
     borderColor: 'border-amber-400',
     tagBg: 'bg-amber-400 text-stone-950 border-amber-200'
@@ -29,8 +29,8 @@ export const DEITIES: PartyDeity[] = [
     id: 'kiro',
     name: 'Thần Kiro',
     title: 'Zero Bug Shield',
-    statueImg: '/kiro_chibi.jpg',
-    partyImg: '/kiro_party.jpg',
+    statueImg: '/kiro_chibi.jpg?v=2',
+    partyImg: '/kiro_party.jpg?v=2',
     glowColor: 'rgba(168, 85, 247, 0.8)',
     borderColor: 'border-purple-400',
     tagBg: 'bg-purple-400 text-stone-950 border-purple-200'
