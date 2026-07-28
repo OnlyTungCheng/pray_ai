@@ -4,6 +4,7 @@ import CenserSection from '../features/censer/CenserSection';
 import PrayerModal from '../features/prayer/PrayerModal';
 import BgmPlayer from '../components/BgmPlayer';
 import SakuraRain from '../features/effects/SakuraRain';
+import RemixFireworks from '../features/effects/RemixFireworks';
 import DiscoBall from '../components/DiscoBall';
 import { useLocalStorageState } from '../hooks/useLocalStorageState';
 import type { IncenseStick, Wish } from '../types';
@@ -12,6 +13,7 @@ export default function AltarPage() {
   const [currentDeityId] = useState('claude');
   const [isPrayerModalOpen, setIsPrayerModalOpen] = useState(false);
   const [isSakuraActive, setIsSakuraActive] = useState(false);
+  const [isFireworksActive, setIsFireworksActive] = useState(false);
   const [themeMode, setThemeMode] = useState('basic'); // 'basic' | 'remix'
 
   // Incense sticks state (persisted to localStorage)
@@ -26,7 +28,7 @@ export default function AltarPage() {
       id: 1,
       author: 'Senior Fullstack Dev',
       text: 'Cầu cho lượt Deploy Production lúc 5h chiều nay 0 downtime, 0 bug, server ổn định!',
-      targetDeity: 'Claude Code',
+      targetDeity: 'Claude',
       blessings: 18,
       time: '10 mins ago'
     }
@@ -50,7 +52,13 @@ export default function AltarPage() {
 
   const handleAddWish = (newWish: Wish) => {
     setWishes((prev) => [newWish, ...prev]);
-    setIsSakuraActive(true); // Trigger falling peach blossom petals!
+
+    // Trigger theme-specific celebration effect after prayer!
+    if (themeMode === 'remix') {
+      setIsFireworksActive(true); // Explosive Celebratory Fireworks for Vinahouse Remix Theme!
+    } else {
+      setIsSakuraActive(true); // Falling Peach Blossom Petals for Basic Theme!
+    }
   };
 
   const handleToggleTheme = () => {
@@ -77,10 +85,16 @@ export default function AltarPage() {
       {/* Interactive 3D Disco Ball for Vinahouse Remix Theme */}
       <DiscoBall isRemix={isRemix} />
 
-      {/* Gentle Falling Peach Blossom Petals Animation (Hoa Đào Rơi) */}
+      {/* Gentle Falling Peach Blossom Petals Animation for Basic Theme */}
       <SakuraRain
         isActive={isSakuraActive}
         onComplete={() => setIsSakuraActive(false)}
+      />
+
+      {/* Explosive Celebratory Nightclub Fireworks Burst for Remix Theme */}
+      <RemixFireworks
+        isActive={isFireworksActive}
+        onComplete={() => setIsFireworksActive(false)}
       />
 
       {/* Centered Popup Prayer Modal */}
@@ -90,11 +104,12 @@ export default function AltarPage() {
         onAddWish={handleAddWish}
         currentDeityName={currentDeityObj.name}
         hasActiveIncense={sticks.length > 0}
+        themeMode={themeMode}
       />
 
       {/* Clean Single Screen Altar Content (No Scroll, Ultra Clean View) */}
       <main className="flex-1 flex flex-col justify-center items-center relative overflow-hidden">
-        {/* 1. Tượng Thần Dev (Claude Code, Codex, Kiro) trong Miếu Thờ */}
+        {/* 1. Tượng Thần Dev (Claude, Codex, Kiro) trong Miếu Thờ / Club */}
         <TechDeities themeMode={themeMode} />
 
         {/* 2. Bát Hương / Bàn DJ + Nút Dọn Bát Hương & Nút Khấn Nguyện */}

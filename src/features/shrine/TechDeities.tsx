@@ -1,20 +1,26 @@
 import type { Deity } from '../../types';
 
-export const DEITIES: Deity[] = [
+export interface PartyDeity extends Deity {
+  partyImg: string;
+}
+
+export const DEITIES: PartyDeity[] = [
   {
     id: 'codex',
     name: 'Thần Codex',
     title: 'Speed & Matrix Gen',
-    statueImg: '/codex_chibi.jpg',
+    statueImg: '/codex_chibi.jpg?v=2',
+    partyImg: '/codex_party.jpg?v=2',
     glowColor: 'rgba(16, 185, 129, 0.8)',
     borderColor: 'border-emerald-400',
     tagBg: 'bg-emerald-500 text-stone-950 border-emerald-300'
   },
   {
     id: 'claude',
-    name: 'Thần Claude Code',
+    name: 'Thần Claude',
     title: 'Architecture & Logic',
-    statueImg: '/claude_chibi.jpg',
+    statueImg: '/claude_chibi.jpg?v=2',
+    partyImg: '/claude_party.jpg?v=2',
     glowColor: 'rgba(245, 158, 11, 0.9)',
     borderColor: 'border-amber-400',
     tagBg: 'bg-amber-400 text-stone-950 border-amber-200'
@@ -23,7 +29,8 @@ export const DEITIES: Deity[] = [
     id: 'kiro',
     name: 'Thần Kiro',
     title: 'Zero Bug Shield',
-    statueImg: '/kiro_chibi.jpg',
+    statueImg: '/kiro_chibi.jpg?v=2',
+    partyImg: '/kiro_party.jpg?v=2',
     glowColor: 'rgba(168, 85, 247, 0.8)',
     borderColor: 'border-purple-400',
     tagBg: 'bg-purple-400 text-stone-950 border-purple-200'
@@ -133,6 +140,7 @@ export default function TechDeities({ themeMode }: TechDeitiesProps) {
             const displayName = isRemix
               ? deity.name.replace('Thần', 'Dân Chơi')
               : deity.name;
+            const imgSrc = isRemix ? deity.partyImg : deity.statueImg;
 
             return (
               <div
@@ -152,13 +160,13 @@ export default function TechDeities({ themeMode }: TechDeitiesProps) {
                   {isRemix ? '🕶️' : '🧘‍♂️'} {displayName}
                 </div>
 
-                {/* Mascot Image with Dân Chơi Party Overlay in Remix Mode */}
+                {/* Party Mascot Image */}
                 <div className="relative overflow-hidden w-full bg-stone-950 flex items-center justify-center">
                   <img
-                    src={deity.statueImg}
+                    src={imgSrc}
                     alt={displayName}
                     className={`h-[24vh] md:h-[29vh] w-full object-cover brightness-110 contrast-105 ${
-                      isRemix ? 'animate-bounce hue-rotate-15 saturate-150' : ''
+                      isRemix ? 'animate-bounce' : ''
                     }`}
                     style={{
                       filter: isRemix
@@ -166,21 +174,6 @@ export default function TechDeities({ themeMode }: TechDeitiesProps) {
                         : `drop-shadow(0 0 25px ${deity.glowColor})`
                     }}
                   />
-
-                  {/* Dân Chơi Party Accessories Overlay (Mắt Kính Râm, Tai Nghe DJ & Ly Cocktail Đi Bar) */}
-                  {isRemix && (
-                    <>
-                      {/* Sunglasses Overlay */}
-                      <div className="absolute top-[28%] left-1/2 -translate-x-1/2 text-2xl md:text-4xl drop-shadow-[0_0_10px_rgba(0,0,0,0.9)] animate-pulse pointer-events-none">
-                        🕶️
-                      </div>
-
-                      {/* Party Cocktail Drink Badge */}
-                      <div className="absolute bottom-2 right-2 text-xl md:text-2xl drop-shadow-[0_0_12px_rgba(236,72,153,0.9)] animate-bounce pointer-events-none">
-                        🍸
-                      </div>
-                    </>
-                  )}
                 </div>
               </div>
             );
