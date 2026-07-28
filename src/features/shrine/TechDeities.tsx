@@ -76,41 +76,37 @@ export default function TechDeities({ themeMode }: TechDeitiesProps) {
             : 'border-amber-500 bg-gradient-to-b from-[#451a03] via-[#292524] to-stone-900 shadow-[0_0_80px_rgba(245,158,11,0.5)]'
         }`}
       >
-        {/* Roof Plaque Banner */}
-        <div className="relative -mt-8 md:-mt-10 mb-4 flex items-center justify-between px-4">
-          {/* Left Lantern / Disco Ball */}
-          <div className="flex flex-col items-center animate-bounce">
-            <span className="text-3xl md:text-4xl drop-shadow-[0_0_15px_rgba(239,68,68,1)]">
-              {isRemix ? '🪩' : '🏮'}
-            </span>
-          </div>
+        {/* Roof Plaque Banner (Only shown in Basic Mode so it doesn't obstruct 3D Disco Ball in Remix Mode) */}
+        {!isRemix && (
+          <div className="relative -mt-8 md:-mt-10 mb-4 flex items-center justify-between px-4">
+            {/* Left Lantern */}
+            <div className="flex flex-col items-center animate-bounce">
+              <span className="text-3xl md:text-4xl drop-shadow-[0_0_15px_rgba(239,68,68,1)]">
+                🏮
+              </span>
+            </div>
 
-          {/* Center Shrine / Club Plaque Banner */}
-          <div
-            className={`relative px-6 md:px-10 py-2.5 rounded-2xl border-4 shadow-2xl transition-all duration-500 ${
-              isRemix
-                ? 'bg-gradient-to-r from-fuchsia-600 via-pink-500 to-purple-600 border-white text-white shadow-[0_0_35px_rgba(236,72,153,1)] animate-pulse'
-                : 'bg-gradient-to-r from-red-700 via-amber-500 to-red-700 border-amber-200 text-stone-950 shadow-[0_0_35px_rgba(245,158,11,0.9)]'
-            }`}
-          >
-            <span className="font-serif font-black text-sm md:text-lg text-white tracking-[0.2em] uppercase text-shadow-lg">
-              {isRemix ? '🪩 CLUB CỦA 3 DÂN CHƠI 🪩' : '⛩️ MIẾU THỜ TAM VỊ AI ⛩️'}
-            </span>
-          </div>
+            {/* Center Shrine Plaque Banner */}
+            <div className="relative px-6 md:px-10 py-2.5 rounded-2xl border-4 shadow-2xl transition-all duration-500 bg-gradient-to-r from-red-700 via-amber-500 to-red-700 border-amber-200 text-stone-950 shadow-[0_0_35px_rgba(245,158,11,0.9)]">
+              <span className="font-serif font-black text-sm md:text-lg text-white tracking-[0.25em] uppercase text-shadow-lg">
+                ⛩️ MIẾU THỜ TAM VỊ AI ⛩️
+              </span>
+            </div>
 
-          {/* Right Lantern / Disco Ball */}
-          <div className="flex flex-col items-center animate-bounce">
-            <span className="text-3xl md:text-4xl drop-shadow-[0_0_15px_rgba(239,68,68,1)]">
-              {isRemix ? '🪩' : '🏮'}
-            </span>
+            {/* Right Lantern */}
+            <div className="flex flex-col items-center animate-bounce">
+              <span className="text-3xl md:text-4xl drop-shadow-[0_0_15px_rgba(239,68,68,1)]">
+                🏮
+              </span>
+            </div>
           </div>
-        </div>
+        )}
 
         {/* Interior Alcove */}
         <div
           className={`relative flex justify-center items-end gap-3 md:gap-5 pb-3 rounded-2xl p-3 border-2 transition-all duration-500 ${
             isRemix
-              ? 'bg-[#2e1065] border-fuchsia-400 shadow-[inset_0_0_50px_rgba(236,72,153,0.6)]'
+              ? 'bg-[#2e1065] border-fuchsia-400 shadow-[inset_0_0_50px_rgba(236,72,153,0.6)] mt-4'
               : 'bg-[#1c1917] border-amber-500/60 shadow-[inset_0_0_50px_rgba(245,158,11,0.3)]'
           }`}
         >
