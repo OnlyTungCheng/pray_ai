@@ -1,4 +1,4 @@
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route } from 'react-router';
 import AltarPage from './pages/AltarPage';
 
 export default function App() {
