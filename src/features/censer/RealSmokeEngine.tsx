@@ -1,5 +1,5 @@
-import React, { useEffect, useRef } from 'react';
-import type { IncenseStick } from '../types';
+import { useEffect, useRef } from 'react';
+import type { IncenseStick } from '../../types';
 
 interface RealSmokeEngineProps {
   sticks: IncenseStick[];

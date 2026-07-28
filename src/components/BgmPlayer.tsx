@@ -1,6 +1,11 @@
 import { useState, useEffect, useRef } from 'react';
 
-export default function BgmPlayer({ themeMode, onToggleTheme }) {
+interface BgmPlayerProps {
+  themeMode?: string;
+  onToggleTheme?: () => void;
+}
+
+export default function BgmPlayer({ themeMode, onToggleTheme }: BgmPlayerProps) {
   const [isPlaying, setIsPlaying] = useState(false);
   const [volume, setVolume] = useState(0.5);
   const [hasInteracted, setHasInteracted] = useState(false);
@@ -73,17 +78,19 @@ export default function BgmPlayer({ themeMode, onToggleTheme }) {
       <audio ref={audioRef} src={audioSrc} loop preload="auto" />
 
       {/* Theme Switcher Button */}
-      <button
-        onClick={onToggleTheme}
-        className={`px-3 py-1.5 rounded-full font-extrabold text-xs transition-all flex items-center gap-1.5 cursor-pointer border shadow-lg ${
-          themeMode === 'remix'
-            ? 'bg-gradient-to-r from-fuchsia-600 via-pink-600 to-purple-600 text-white border-pink-300 shadow-pink-500/50 animate-pulse'
-            : 'bg-stone-800 text-amber-300 border-amber-500/40 hover:bg-stone-700'
-        }`}
-        title="Bấm để đổi Theme: Basic (Thanh Tịnh) vs Vinahouse Remix (Sập Sình)"
-      >
-        <span>{themeMode === 'remix' ? '🪩 Theme Remix Vinahouse' : '🏛️ Theme Basic'}</span>
-      </button>
+      {onToggleTheme && (
+        <button
+          onClick={onToggleTheme}
+          className={`px-3 py-1.5 rounded-full font-extrabold text-xs transition-all flex items-center gap-1.5 cursor-pointer border shadow-lg ${
+            themeMode === 'remix'
+              ? 'bg-gradient-to-r from-fuchsia-600 via-pink-600 to-purple-600 text-white border-pink-300 shadow-pink-500/50 animate-pulse'
+              : 'bg-stone-800 text-amber-300 border-amber-500/40 hover:bg-stone-700'
+          }`}
+          title="Bấm để đổi Theme: Basic (Thanh Tịnh) vs Vinahouse Remix (Sập Sình)"
+        >
+          <span>{themeMode === 'remix' ? '🪩 Theme Remix Vinahouse' : '🏛️ Theme Basic'}</span>
+        </button>
+      )}
 
       {/* Play/Pause Sound Icon Button */}
       <button

@@ -1,4 +1,4 @@
-import type { Deity } from '../types';
+import type { Deity } from '../../types';
 
 export const DEITIES: Deity[] = [
   {
@@ -30,7 +30,11 @@ export const DEITIES: Deity[] = [
   }
 ];
 
-export default function TechDeities({ themeMode }) {
+interface TechDeitiesProps {
+  themeMode?: string;
+}
+
+export default function TechDeities({ themeMode }: TechDeitiesProps) {
   const isRemix = themeMode === 'remix';
 
   return (

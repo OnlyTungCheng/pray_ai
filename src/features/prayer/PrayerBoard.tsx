@@ -1,6 +1,6 @@
 import { useState, useRef } from 'react';
 import type { FormEvent } from 'react';
-import type { Wish } from '../types';
+import type { Wish } from '../../types';
 
 const QUICK_TAGS = [
   '🚀 Deploy 0 Bug',
