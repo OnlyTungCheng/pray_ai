@@ -1,3 +1,5 @@
+"use client";
+
 import { useState, useEffect } from 'react';
 import TechDeities, { DEITIES } from '../features/shrine/TechDeities';
 import CenserSection from '../features/censer/CenserSection';
