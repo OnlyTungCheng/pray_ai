@@ -72,7 +72,7 @@ export default function TechDeities({ themeMode }: TechDeitiesProps) {
       <div
         className={`relative w-full max-w-4xl rounded-t-[2.5rem] border-t-8 border-x-8 transition-all duration-700 p-3 md:p-5 ${
           isRemix
-            ? 'border-fuchsia-500 bg-gradient-to-b from-[#581c87] via-[#3b0764] to-stone-900 shadow-[0_0_90px_rgba(236,72,153,0.9)] animate-pulse'
+            ? 'border-fuchsia-500 bg-gradient-to-b from-[#581c87] via-[#3b0764] to-stone-900 shadow-[0_0_90px_rgba(236,72,153,0.9)] animate-pulse mt-6 md:mt-8'
             : 'border-amber-500 bg-gradient-to-b from-[#451a03] via-[#292524] to-stone-900 shadow-[0_0_80px_rgba(245,158,11,0.5)]'
         }`}
       >
@@ -106,7 +106,7 @@ export default function TechDeities({ themeMode }: TechDeitiesProps) {
         <div
           className={`relative flex justify-center items-end gap-3 md:gap-5 pb-3 rounded-2xl p-3 border-2 transition-all duration-500 ${
             isRemix
-              ? 'bg-[#2e1065] border-fuchsia-400 shadow-[inset_0_0_50px_rgba(236,72,153,0.6)] mt-4'
+              ? 'bg-[#2e1065] border-fuchsia-400 shadow-[inset_0_0_50px_rgba(236,72,153,0.6)]'
               : 'bg-[#1c1917] border-amber-500/60 shadow-[inset_0_0_50px_rgba(245,158,11,0.3)]'
           }`}
         >
