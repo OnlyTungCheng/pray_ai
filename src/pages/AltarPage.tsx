@@ -90,6 +90,7 @@ export default function AltarPage() {
         onAddWish={handleAddWish}
         currentDeityName={currentDeityObj.name}
         hasActiveIncense={sticks.length > 0}
+        themeMode={themeMode}
       />
 
       {/* Clean Single Screen Altar Content (No Scroll, Ultra Clean View) */}
