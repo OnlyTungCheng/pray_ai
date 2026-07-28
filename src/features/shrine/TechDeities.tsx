@@ -128,9 +128,8 @@ export default function TechDeities({ themeMode }: TechDeitiesProps) {
             </div>
           )}
 
-          {/* 3 Meditating Mascots / Dân Chơi Mascots */}
+          {/* 3 Meditating Mascots / Dân Chơi Mascots - Uniform Equal Size */}
           {DEITIES.map((deity) => {
-            const isCenter = deity.id === 'claude';
             const displayName = isRemix
               ? deity.name.replace('Thần', 'Dân Chơi')
               : deity.name;
@@ -140,11 +139,7 @@ export default function TechDeities({ themeMode }: TechDeitiesProps) {
                 key={deity.id}
                 className={`relative flex flex-col items-center rounded-2xl overflow-hidden border-4 ${
                   isRemix ? 'border-pink-400 shadow-[0_0_35px_rgba(236,72,153,0.9)]' : deity.borderColor
-                } shadow-[0_15px_45px_rgba(0,0,0,0.95)] bg-stone-900 transition-all duration-300 ${
-                  isCenter
-                    ? 'z-10 scale-105 shadow-[0_0_50px_rgba(245,158,11,0.7)]'
-                    : 'opacity-100'
-                }`}
+                } shadow-[0_15px_45px_rgba(0,0,0,0.95)] bg-stone-900 transition-all duration-300 opacity-100`}
               >
                 {/* Prominent Bright Name Header */}
                 <div
@@ -157,14 +152,12 @@ export default function TechDeities({ themeMode }: TechDeitiesProps) {
                   {isRemix ? '🕶️' : '🧘‍♂️'} {displayName}
                 </div>
 
-                {/* Crystal Clear Meditating Chibi Mascot Image */}
+                {/* Uniform Equal Size Mascot Image */}
                 <div className="relative overflow-hidden w-full bg-stone-950">
                   <img
                     src={deity.statueImg}
                     alt={displayName}
-                    className={`${
-                      isCenter ? 'h-[30vh] md:h-[36vh]' : 'h-[24vh] md:h-[29vh]'
-                    } w-auto object-cover mx-auto brightness-110 contrast-105 transition-transform duration-300 ${
+                    className={`h-[24vh] md:h-[29vh] w-auto object-cover mx-auto brightness-110 contrast-105 transition-transform duration-300 ${
                       isRemix ? 'animate-bounce' : ''
                     }`}
                     style={{
