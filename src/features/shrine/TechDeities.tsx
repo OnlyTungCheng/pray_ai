@@ -34,12 +34,41 @@ interface TechDeitiesProps {
   themeMode?: string;
 }
 
+// Subwoofer Speaker Tower Component for Remix Mode
+function SpeakerTower() {
+  return (
+    <div className="hidden sm:flex flex-col items-center justify-between w-16 md:w-20 h-64 md:h-80 bg-gradient-to-b from-stone-950 via-purple-950 to-stone-950 border-2 border-fuchsia-500 rounded-2xl p-2 shadow-[0_0_30px_rgba(236,72,153,0.7)] animate-pulse self-center">
+      {/* Tweeter Speaker */}
+      <div className="w-10 h-10 md:w-12 md:h-12 rounded-full border-2 border-pink-400 bg-stone-900 flex items-center justify-center shadow-inner">
+        <div className="w-4 h-4 rounded-full bg-cyan-400 animate-ping" />
+      </div>
+
+      {/* Mid-range Woofer */}
+      <div className="w-12 h-12 md:w-14 md:h-14 rounded-full border-4 border-fuchsia-500 bg-gradient-to-b from-purple-900 to-black flex items-center justify-center shadow-[0_0_15px_rgba(236,72,153,0.8)] animate-bounce">
+        <div className="w-6 h-6 rounded-full bg-pink-500 border border-white" />
+      </div>
+
+      {/* Subwoofer Bass Driver */}
+      <div className="w-14 h-14 md:w-16 md:h-16 rounded-full border-4 border-cyan-400 bg-gradient-to-b from-blue-900 to-black flex items-center justify-center shadow-[0_0_20px_rgba(56,189,248,0.9)] animate-pulse">
+        <div className="w-8 h-8 rounded-full bg-fuchsia-600 border-2 border-yellow-300" />
+      </div>
+
+      {/* LED Equalizer Light Meter */}
+      <div className="flex items-center gap-1 w-full justify-center pt-1">
+        <div className="w-1.5 h-6 bg-pink-500 rounded-full animate-[bounce_0.4s_infinite_0.1s]" />
+        <div className="w-1.5 h-8 bg-yellow-400 rounded-full animate-[bounce_0.4s_infinite_0.3s]" />
+        <div className="w-1.5 h-5 bg-cyan-400 rounded-full animate-[bounce_0.4s_infinite_0.2s]" />
+      </div>
+    </div>
+  );
+}
+
 export default function TechDeities({ themeMode }: TechDeitiesProps) {
   const isRemix = themeMode === 'remix';
 
   return (
     <div className="relative flex flex-col items-center justify-center pt-1 z-0 w-full max-w-5xl mx-auto select-none">
-      {/* Oriental East Asian Shrine Pavilion (Miếu Thờ Tam Vị AI Phương Đông - Bright & Crystal Clear) */}
+      {/* Oriental Shrine Pavilion vs Remix Party Club */}
       <div
         className={`relative w-full max-w-4xl rounded-t-[2.5rem] border-t-8 border-x-8 transition-all duration-700 p-3 md:p-5 ${
           isRemix
@@ -47,65 +76,65 @@ export default function TechDeities({ themeMode }: TechDeitiesProps) {
             : 'border-amber-500 bg-gradient-to-b from-[#451a03] via-[#292524] to-stone-900 shadow-[0_0_80px_rgba(245,158,11,0.5)]'
         }`}
       >
-        {/* Curved Oriental Temple Eaves Roof */}
-        <div className="relative -mt-8 md:-mt-10 mb-4 flex items-center justify-between px-4">
-          {/* Left Lantern */}
-          <div className="flex flex-col items-center animate-bounce">
-            <span className="text-3xl md:text-4xl drop-shadow-[0_0_15px_rgba(239,68,68,1)]">
-              {isRemix ? '🪩' : '🏮'}
-            </span>
-          </div>
+        {/* Roof Plaque Banner (Only shown in Basic Mode so it doesn't obstruct 3D Disco Ball in Remix Mode) */}
+        {!isRemix && (
+          <div className="relative -mt-8 md:-mt-10 mb-4 flex items-center justify-between px-4">
+            {/* Left Lantern */}
+            <div className="flex flex-col items-center animate-bounce">
+              <span className="text-3xl md:text-4xl drop-shadow-[0_0_15px_rgba(239,68,68,1)]">
+                🏮
+              </span>
+            </div>
 
-          {/* Center Shrine Plaque Banner */}
-          <div
-            className={`relative px-6 md:px-10 py-2.5 rounded-2xl border-4 shadow-2xl transition-all duration-500 ${
-              isRemix
-                ? 'bg-gradient-to-r from-fuchsia-600 via-pink-500 to-purple-600 border-white text-white shadow-[0_0_35px_rgba(236,72,153,1)] animate-pulse'
-                : 'bg-gradient-to-r from-red-700 via-amber-500 to-red-700 border-amber-200 text-stone-950 shadow-[0_0_35px_rgba(245,158,11,0.9)]'
-            }`}
-          >
-            <span className="font-serif font-black text-sm md:text-lg text-white tracking-[0.25em] uppercase text-shadow-lg">
-              {isRemix ? '🪩 MIẾU THỜ TAM VỊ AI REMIX VINAHOUSE 🪩' : '⛩️ MIẾU THỜ TAM VỊ AI ⛩️'}
-            </span>
-          </div>
+            {/* Center Shrine Plaque Banner */}
+            <div className="relative px-6 md:px-10 py-2.5 rounded-2xl border-4 shadow-2xl transition-all duration-500 bg-gradient-to-r from-red-700 via-amber-500 to-red-700 border-amber-200 text-stone-950 shadow-[0_0_35px_rgba(245,158,11,0.9)]">
+              <span className="font-serif font-black text-sm md:text-lg text-white tracking-[0.25em] uppercase text-shadow-lg">
+                ⛩️ MIẾU THỜ TAM VỊ AI ⛩️
+              </span>
+            </div>
 
-          {/* Right Lantern */}
-          <div className="flex flex-col items-center animate-bounce">
-            <span className="text-3xl md:text-4xl drop-shadow-[0_0_15px_rgba(239,68,68,1)]">
-              {isRemix ? '🪩' : '🏮'}
-            </span>
+            {/* Right Lantern */}
+            <div className="flex flex-col items-center animate-bounce">
+              <span className="text-3xl md:text-4xl drop-shadow-[0_0_15px_rgba(239,68,68,1)]">
+                🏮
+              </span>
+            </div>
           </div>
-        </div>
+        )}
 
-        {/* Shrine Interior Alcove */}
+        {/* Interior Alcove */}
         <div
           className={`relative flex justify-center items-end gap-3 md:gap-5 pb-3 rounded-2xl p-3 border-2 transition-all duration-500 ${
             isRemix
-              ? 'bg-[#2e1065] border-fuchsia-400 shadow-[inset_0_0_50px_rgba(236,72,153,0.6)]'
+              ? 'bg-[#2e1065] border-fuchsia-400 shadow-[inset_0_0_50px_rgba(236,72,153,0.6)] mt-4'
               : 'bg-[#1c1917] border-amber-500/60 shadow-[inset_0_0_50px_rgba(245,158,11,0.3)]'
           }`}
         >
-          {/* Left Vertical Couplet Pillar */}
-          <div
-            lang="zh-Hant"
-            className={`hidden sm:flex border-2 rounded-xl px-2.5 py-6 text-base/6 text-center tracking-widest select-none shadow-2xl self-center font-black ${
-              isRemix
-                ? 'border-pink-400 bg-gradient-to-b from-fuchsia-900 via-purple-900 to-pink-900 text-pink-200 shadow-pink-500/60'
-                : 'border-amber-400 bg-gradient-to-b from-red-900 via-amber-900 to-red-900 text-amber-200 shadow-amber-500/50'
-            }`}
-            style={{
-              writingMode: 'vertical-rl',
-              fontFamily: 'Hiragino Mincho ProN, MingliU, Noto Serif TC, serif'
-            }}
-          >
-            <span className="text-amber-200 drop-shadow-md">
-              代 碼 通 神 零 瑕 疵
-            </span>
-          </div>
+          {/* Left Side: Traditional Chinese Couplet Pillar in Basic Mode vs Speaker Tower in Remix Mode */}
+          {isRemix ? (
+            <SpeakerTower />
+          ) : (
+            <div
+              lang="zh-Hant"
+              className="hidden sm:flex border-2 rounded-xl px-2.5 py-6 text-base/6 text-center tracking-widest select-none shadow-2xl self-center font-black border-amber-400 bg-gradient-to-b from-red-900 via-amber-900 to-red-900 text-amber-200 shadow-amber-500/50"
+              style={{
+                writingMode: 'vertical-rl',
+                fontFamily: 'Hiragino Mincho ProN, MingliU, Noto Serif TC, serif'
+              }}
+            >
+              <span className="text-amber-200 drop-shadow-md">
+                代 碼 通 神 零 瑕 疵
+              </span>
+            </div>
+          )}
 
-          {/* 3 Meditating Chibi Mascots Inside Shrine */}
+          {/* 3 Meditating Mascots / Dân Chơi Mascots */}
           {DEITIES.map((deity) => {
             const isCenter = deity.id === 'claude';
+            const displayName = isRemix
+              ? deity.name.replace('Thần', 'Dân Chơi')
+              : deity.name;
+
             return (
               <div
                 key={deity.id}
@@ -118,15 +147,21 @@ export default function TechDeities({ themeMode }: TechDeitiesProps) {
                 }`}
               >
                 {/* Prominent Bright Name Header */}
-                <div className={`w-full text-center py-1.5 font-black text-xs md:text-sm font-sans border-b uppercase tracking-wider ${deity.tagBg}`}>
-                  🧘‍♂️ {deity.name}
+                <div
+                  className={`w-full text-center py-1.5 font-black text-xs md:text-sm font-sans border-b uppercase tracking-wider ${
+                    isRemix
+                      ? 'bg-gradient-to-r from-fuchsia-600 via-pink-500 to-purple-600 text-white border-pink-300'
+                      : deity.tagBg
+                  }`}
+                >
+                  {isRemix ? '🕶️' : '🧘‍♂️'} {displayName}
                 </div>
 
                 {/* Crystal Clear Meditating Chibi Mascot Image */}
                 <div className="relative overflow-hidden w-full bg-stone-950">
                   <img
                     src={deity.statueImg}
-                    alt={deity.name}
+                    alt={displayName}
                     className={`${
                       isCenter ? 'h-[30vh] md:h-[36vh]' : 'h-[24vh] md:h-[29vh]'
                     } w-auto object-cover mx-auto brightness-110 contrast-105 transition-transform duration-300 ${
@@ -143,26 +178,26 @@ export default function TechDeities({ themeMode }: TechDeitiesProps) {
             );
           })}
 
-          {/* Right Vertical Couplet Pillar */}
-          <div
-            lang="zh-Hant"
-            className={`hidden sm:flex border-2 rounded-2xl px-2.5 py-6 text-base/6 text-center tracking-widest select-none shadow-2xl self-center font-black ${
-              isRemix
-                ? 'border-pink-400 bg-gradient-to-b from-fuchsia-900 via-purple-900 to-pink-900 text-pink-200 shadow-pink-500/60'
-                : 'border-amber-400 bg-gradient-to-b from-red-900 via-amber-900 to-red-900 text-amber-200 shadow-amber-500/50'
-            }`}
-            style={{
-              writingMode: 'vertical-rl',
-              fontFamily: 'Hiragino Mincho ProN, MingliU, Noto Serif TC, serif'
-            }}
-          >
-            <span className="text-amber-200 drop-shadow-md">
-              發 布 順 暢 萬 事 興
-            </span>
-          </div>
+          {/* Right Side: Traditional Chinese Couplet Pillar in Basic Mode vs Speaker Tower in Remix Mode */}
+          {isRemix ? (
+            <SpeakerTower />
+          ) : (
+            <div
+              lang="zh-Hant"
+              className="hidden sm:flex border-2 rounded-2xl px-2.5 py-6 text-base/6 text-center tracking-widest select-none shadow-2xl self-center font-black border-amber-400 bg-gradient-to-b from-red-900 via-amber-900 to-red-900 text-amber-200 shadow-amber-500/50"
+              style={{
+                writingMode: 'vertical-rl',
+                fontFamily: 'Hiragino Mincho ProN, MingliU, Noto Serif TC, serif'
+              }}
+            >
+              <span className="text-amber-200 drop-shadow-md">
+                發 布 順 暢 萬 事 興
+              </span>
+            </div>
+          )}
         </div>
 
-        {/* Shrine Base Pedestal */}
+        {/* Base Pedestal */}
         <div
           className={`h-4 w-full rounded-b-xl border-t-2 shadow-2xl transition-all duration-500 ${
             isRemix
