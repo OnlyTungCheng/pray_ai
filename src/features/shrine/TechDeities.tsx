@@ -76,7 +76,7 @@ export default function TechDeities({ themeMode }: TechDeitiesProps) {
             : 'border-amber-500 bg-gradient-to-b from-[#451a03] via-[#292524] to-stone-900 shadow-[0_0_80px_rgba(245,158,11,0.5)]'
         }`}
       >
-        {/* Roof Plaque Banner (Only shown in Basic Mode so it doesn't obstruct 3D Disco Ball in Remix Mode) */}
+        {/* Roof Plaque Banner (Only shown in Basic Mode) */}
         {!isRemix && (
           <div className="relative -mt-8 md:-mt-10 mb-4 flex items-center justify-between px-4">
             {/* Left Lantern */}
@@ -110,7 +110,7 @@ export default function TechDeities({ themeMode }: TechDeitiesProps) {
               : 'bg-[#1c1917] border-amber-500/60 shadow-[inset_0_0_50px_rgba(245,158,11,0.3)]'
           }`}
         >
-          {/* Left Side: Traditional Chinese Couplet Pillar in Basic Mode vs Speaker Tower in Remix Mode */}
+          {/* Left Side: Couplet Pillar vs Speaker Tower */}
           {isRemix ? (
             <SpeakerTower />
           ) : (
@@ -128,7 +128,7 @@ export default function TechDeities({ themeMode }: TechDeitiesProps) {
             </div>
           )}
 
-          {/* 3 Meditating Mascots / Dân Chơi Mascots - Uniform Equal Size */}
+          {/* 3 Meditating Mascots / Dân Chơi Đi Bar Mascots */}
           {DEITIES.map((deity) => {
             const displayName = isRemix
               ? deity.name.replace('Thần', 'Dân Chơi')
@@ -139,7 +139,7 @@ export default function TechDeities({ themeMode }: TechDeitiesProps) {
                 key={deity.id}
                 className={`relative flex flex-col items-center rounded-2xl overflow-hidden border-4 ${
                   isRemix ? 'border-pink-400 shadow-[0_0_35px_rgba(236,72,153,0.9)]' : deity.borderColor
-                } shadow-[0_15px_45px_rgba(0,0,0,0.95)] bg-stone-900 transition-all duration-300 opacity-100`}
+                } shadow-[0_15px_45px_rgba(0,0,0,0.95)] bg-stone-900 scale-100 flex-1 max-w-[30%]`}
               >
                 {/* Prominent Bright Name Header */}
                 <div
@@ -152,13 +152,13 @@ export default function TechDeities({ themeMode }: TechDeitiesProps) {
                   {isRemix ? '🕶️' : '🧘‍♂️'} {displayName}
                 </div>
 
-                {/* Uniform Equal Size Mascot Image */}
-                <div className="relative overflow-hidden w-full bg-stone-950">
+                {/* Mascot Image with Dân Chơi Party Overlay in Remix Mode */}
+                <div className="relative overflow-hidden w-full bg-stone-950 flex items-center justify-center">
                   <img
                     src={deity.statueImg}
                     alt={displayName}
-                    className={`h-[24vh] md:h-[29vh] w-auto object-cover mx-auto brightness-110 contrast-105 transition-transform duration-300 ${
-                      isRemix ? 'animate-bounce' : ''
+                    className={`h-[24vh] md:h-[29vh] w-full object-cover brightness-110 contrast-105 ${
+                      isRemix ? 'animate-bounce hue-rotate-15 saturate-150' : ''
                     }`}
                     style={{
                       filter: isRemix
@@ -166,12 +166,27 @@ export default function TechDeities({ themeMode }: TechDeitiesProps) {
                         : `drop-shadow(0 0 25px ${deity.glowColor})`
                     }}
                   />
+
+                  {/* Dân Chơi Party Accessories Overlay (Mắt Kính Râm, Tai Nghe DJ & Ly Cocktail Đi Bar) */}
+                  {isRemix && (
+                    <>
+                      {/* Sunglasses Overlay */}
+                      <div className="absolute top-[28%] left-1/2 -translate-x-1/2 text-2xl md:text-4xl drop-shadow-[0_0_10px_rgba(0,0,0,0.9)] animate-pulse pointer-events-none">
+                        🕶️
+                      </div>
+
+                      {/* Party Cocktail Drink Badge */}
+                      <div className="absolute bottom-2 right-2 text-xl md:text-2xl drop-shadow-[0_0_12px_rgba(236,72,153,0.9)] animate-bounce pointer-events-none">
+                        🍸
+                      </div>
+                    </>
+                  )}
                 </div>
               </div>
             );
           })}
 
-          {/* Right Side: Traditional Chinese Couplet Pillar in Basic Mode vs Speaker Tower in Remix Mode */}
+          {/* Right Side: Couplet Pillar vs Speaker Tower */}
           {isRemix ? (
             <SpeakerTower />
           ) : (
