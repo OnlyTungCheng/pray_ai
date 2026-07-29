@@ -2,6 +2,7 @@
 
 import { useCallback, useState } from "react";
 
+import { showApiErrorToast } from "../../lib/api-error-toast";
 import {
   type RoomSnapshot,
   useTempleRoom,
@@ -99,6 +100,7 @@ export function TempleRoomClient({
     );
 
     if (!response.ok) {
+      await showApiErrorToast(response, "Action was rejected");
       throw new Error("Action was rejected");
     }
   }

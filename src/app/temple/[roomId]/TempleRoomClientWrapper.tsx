@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useAnonymousSignIn } from '@/features/auth/anonymous-captcha-gate';
+import { showApiErrorToast } from '@/lib/api-error-toast';
 import LiveAltarPage from '@/screens/LiveAltarPage';
 import type { RoomSnapshot } from '@/features/temple-room/use-temple-room';
 
@@ -56,7 +57,7 @@ export default function TempleRoomClientWrapper({ initialRoom }: WrapperProps) {
       });
 
       if (!res.ok) {
-        const data = await res.json();
+        const data = await showApiErrorToast(res, 'Không thể tham gia đền.');
         throw new Error(data.error || 'Failed to join room');
       }
 

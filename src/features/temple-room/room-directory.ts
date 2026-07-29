@@ -10,9 +10,12 @@ export interface ActiveProjectRoom {
   incenseCount: number;
   bellCount: number;
   prayerCount: number;
+  offeringCount: number;
   energy: number;
   createdAt: string;
   expiresAt: string;
+  hallId: string | null;
+  primaryDeityId: string | null;
 }
 
 export interface ProjectRankEntry {
@@ -21,6 +24,7 @@ export interface ProjectRankEntry {
   totalIncense: number;
   totalBell: number;
   totalPrayer: number;
+  totalOfferings: number;
   avgEnergy: number;
   lastActivityAt: string;
 }
@@ -53,9 +57,12 @@ export async function listActiveProjectRooms(
     incenseCount: row.incense_count,
     bellCount: row.bell_count,
     prayerCount: row.prayer_count,
+    offeringCount: row.offering_count,
     energy: row.energy,
     createdAt: row.created_at,
-    expiresAt: row.expires_at
+    expiresAt: row.expires_at,
+    hallId: row.hall_id ?? null,
+    primaryDeityId: row.primary_deity_id ?? null
   }));
 }
 
@@ -83,6 +90,7 @@ export async function getProjectTopRank(
     totalIncense: row.total_incense,
     totalBell: row.total_bell,
     totalPrayer: row.total_prayer,
+    totalOfferings: row.total_offerings,
     avgEnergy: row.avg_energy,
     lastActivityAt: row.last_activity_at
   }));

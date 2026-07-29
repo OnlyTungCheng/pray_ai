@@ -1,6 +1,7 @@
 import type { SupabaseClient, User } from '@supabase/supabase-js';
 
 import { createRoom, type CreateRoomInput, type CreatedRoom } from '@/features/temple-room/create-room';
+import { getDefaultHall } from '@/features/halls/hall-catalog-service';
 
 export class RoomServiceError extends Error {
   constructor(
@@ -40,8 +41,12 @@ export interface RoomSummary {
   incenseCount: number;
   bellCount: number;
   prayerCount: number;
+  offeringCount: number;
   energy: number;
   revision: number;
+  hallId: string | null;
+  primaryDeityId: string | null;
+  supportDeityIds: string[];
 }
 
 /** Fixed slug for the shared system lobby room seeded by migration 0004. */
@@ -59,8 +64,12 @@ const ROOM_SUMMARY_COLUMNS = `
   incense_count,
   bell_count,
   prayer_count,
+  offering_count,
   energy,
-  revision
+  revision,
+  hall_id,
+  primary_deity_id,
+  support_deity_ids
 `;
 
 function mapRoomRow(row: {
@@ -75,8 +84,12 @@ function mapRoomRow(row: {
   incense_count: number;
   bell_count: number;
   prayer_count: number;
+  offering_count?: number;
   energy: number;
   revision: number;
+  hall_id?: string | null;
+  primary_deity_id?: string | null;
+  support_deity_ids?: string[] | null;
 }): RoomSummary {
   return {
     id: row.id,
@@ -90,8 +103,12 @@ function mapRoomRow(row: {
     incenseCount: row.incense_count,
     bellCount: row.bell_count,
     prayerCount: row.prayer_count,
+    offeringCount: row.offering_count ?? 0,
     energy: row.energy,
-    revision: row.revision
+    revision: row.revision,
+    hallId: row.hall_id ?? null,
+    primaryDeityId: row.primary_deity_id ?? null,
+    supportDeityIds: row.support_deity_ids ?? []
   };
 }
 
@@ -115,8 +132,40 @@ export async function getSystemLobbyRoom(supabase: SupabaseClient): Promise<Room
 }
 
 /**
+ * Fetches a single room by id, using the same ROOM_SUMMARY_COLUMNS/mapRoomRow
+ * as every other room read in this file. Exists so that
+ * src/app/temple/[roomId]/page.tsx (both its generateMetadata and the page
+ * component itself, which both need this same room) has one shared,
+ * type-correct source instead of each hand-rolling its own `select(...)` +
+ * snake_case-to-camelCase mapping — the previous hand-rolled version in
+ * page.tsx had drifted out of sync with RoomSummary (missing offeringCount,
+ * hallId, primaryDeityId, supportDeityIds entirely).
+ */
+export async function getRoomById(supabase: SupabaseClient, roomId: string): Promise<RoomSummary | null> {
+  const { data, error } = await supabase
+    .from('rooms')
+    .select(ROOM_SUMMARY_COLUMNS)
+    .eq('id', roomId)
+    .maybeSingle();
+
+  if (error || !data) {
+    return null;
+  }
+
+  return mapRoomRow(data);
+}
+
+/**
  * Creates a new temple room on behalf of an authenticated user.
  * Matches the doc's /pray flow: nhập project/event/prayer -> tạo phòng.
+ *
+ * Per docs/than.md §4 (revised flow): picking a Hall (Điện) is NOT required
+ * to create a room. If `hallId` is omitted entirely (`undefined` — distinct
+ * from an explicit `null`, which callers can still pass to deliberately
+ * create a hall-less room, e.g. matching the pre-feature system lobby),
+ * this auto-assigns the default Hall (lowest sort_order) and its primary
+ * deity, so every room always renders with *some* Hall context. Users can
+ * switch Halls afterwards via PATCH /api/rooms/[roomId]/hall.
  */
 export async function createRoomForUser(
   supabase: SupabaseClient,
@@ -125,7 +174,23 @@ export async function createRoomForUser(
   const user = await requireUser(supabase);
 
   try {
-    const room = await createRoom(supabase, input);
+    let resolvedInput = input;
+
+    if (input.hallId === undefined) {
+      const defaultHall = await getDefaultHall(supabase);
+      if (defaultHall) {
+        resolvedInput = {
+          ...input,
+          hallId: defaultHall.id,
+          primaryDeityId: input.primaryDeityId ?? defaultHall.deities[0]?.slug ?? null
+        };
+      }
+      // If no halls exist at all (e.g. seed hasn't run), fall through and
+      // create a hall-less room rather than failing room creation entirely
+      // — the Hall system is additive, not a hard dependency for /pray to work.
+    }
+
+    const room = await createRoom(supabase, resolvedInput);
     return { user, room };
   } catch (cause) {
     throw new RoomServiceError(
@@ -180,4 +245,41 @@ export async function joinRoomForUser(
     user,
     room: mapRoomRow(room)
   };
+}
+
+export interface SeatedMember {
+  userId: string;
+  displayName: string;
+  seatSlot: number | null;
+  avatarId: string | null;
+}
+
+/**
+ * Lists room members who currently have a seat_slot/avatar_id recorded in
+ * the database — used to render an initial "who's sitting where" snapshot
+ * before the Realtime Presence channel has connected and synced (see
+ * docs/prd-chibi-avatar-seats.md §3.5). Presence remains the authoritative
+ * live view once connected; this is only a best-known-state fallback to
+ * avoid a flash of empty seats on first render.
+ */
+export async function listSeatedMembers(
+  supabase: SupabaseClient,
+  roomId: string
+): Promise<SeatedMember[]> {
+  const { data, error } = await supabase
+    .from('room_members')
+    .select('user_id, display_name, seat_slot, avatar_id')
+    .eq('room_id', roomId)
+    .not('seat_slot', 'is', null);
+
+  if (error || !data) {
+    return [];
+  }
+
+  return data.map((row) => ({
+    userId: row.user_id,
+    displayName: row.display_name,
+    seatSlot: row.seat_slot,
+    avatarId: row.avatar_id
+  }));
 }

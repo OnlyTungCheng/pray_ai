@@ -3,10 +3,13 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAnonymousSignIn } from '@/features/auth/anonymous-captcha-gate';
+import { showApiErrorToast } from '@/lib/api-error-toast';
+// import { HALLS } from '@/features/temple-room/constants'; // No longer selecting Hall here
 
 export default function PrayPage() {
   const router = useRouter();
   const { signIn, captchaWidget } = useAnonymousSignIn();
+  
   const [projectName, setProjectName] = useState('');
   const [eventType, setEventType] = useState<'build' | 'deploy' | 'migration' | 'release'>('deploy');
   const [prayer, setPrayer] = useState('');
@@ -27,10 +30,8 @@ export default function PrayPage() {
     setError('');
 
     try {
-      // 1. Ensure user is logged in anonymously (CAPTCHA-protected)
       await signIn();
 
-      // 2. Call API to create room
       const res = await fetch('/api/rooms', {
         method: 'POST',
         headers: {
@@ -46,13 +47,11 @@ export default function PrayPage() {
       });
 
       if (!res.ok) {
-        const data = await res.json();
+        const data = await showApiErrorToast(res, 'Không thể tạo phòng.');
         throw new Error(data.error || 'Failed to create room');
       }
 
       const { room } = await res.json();
-      
-      // 3. Redirect to the newly created temple room
       router.push(`/temple/${room.id}`);
     } catch (err: any) {
       console.error(err);
@@ -64,16 +63,17 @@ export default function PrayPage() {
   return (
     <div className="w-full min-h-screen bg-[#1c1917] bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-amber-900/40 via-[#181615] to-black text-stone-100 flex flex-col justify-center items-center p-4">
       {captchaWidget}
-      <div className="w-full max-w-lg bg-stone-900/90 border-2 border-amber-500/30 rounded-3xl p-6 md:p-8 shadow-[0_0_50px_rgba(245,158,11,0.2)] backdrop-blur-xl">
+      
+      <div className="w-full max-w-lg bg-stone-900/90 border-2 border-amber-500/30 rounded-3xl p-6 md:p-8 shadow-[0_0_50px_rgba(245,158,11,0.2)] backdrop-blur-xl animate-in fade-in slide-in-from-bottom-8 duration-300">
         <div className="text-center mb-8">
           <span className="inline-block px-3 py-1 rounded-full bg-amber-500/10 text-amber-400 font-bold text-xs uppercase tracking-wider mb-2 border border-amber-500/20">
-            ⛩️ Đền Cầu Nguyện ⛩️
+            ⛩️ Đàn Lễ ⛩️
           </span>
           <h1 className="text-2xl md:text-3xl font-black font-serif text-amber-200">
             TẠO PHÒNG CẦU NGUYỆN
           </h1>
           <p className="text-stone-400 text-xs md:text-sm mt-1">
-            Lập đền cầu nguyện tập thể trước giờ Deploy, Build hoặc Migration!
+            Lập đàn cầu nguyện nhanh trước giờ Deploy, Build hoặc Migration!
           </p>
         </div>
 
@@ -162,7 +162,7 @@ export default function PrayPage() {
             className="w-full py-4 mt-2 rounded-xl bg-gradient-to-r from-amber-500 via-orange-500 to-amber-600 hover:from-amber-400 hover:to-orange-400 text-stone-950 font-black text-base shadow-xl hover:shadow-amber-500/20 active:scale-95 transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
           >
             <span>✨</span>
-            <span>{isSubmitting ? 'ĐANG LẬP ĐỀN...' : 'LẬP ĐỀN CẦU NGUYỆN'}</span>
+            <span>{isSubmitting ? 'ĐANG TẠO PHÒNG...' : 'TẠO PHÒNG NGAY'}</span>
           </button>
         </form>
       </div>

@@ -1,8 +1,11 @@
 export interface IncenseStick {
+  id?: string;
   x: number;
   y: number;
   z: number;
   exp?: number;
+  ignitedAt?: number;
+  burnDurationMs?: number;
   num: number;
 }
 

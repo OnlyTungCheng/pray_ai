@@ -1,0 +1,8 @@
+Use case: stylized-concept
+Asset type: production 2D animated chibi meditation-spirit sprite sheet for a web-based 2.5D cyber temple scene.
+Primary request: six-frame idle loop for Thần Netlify, an original friendly deployment and web-network spirit sitting cross-legged in meditation.
+Style: clean-HD 2.5D game art, cute compact chibi body in a short ceremonial robe, teal/aqua and warm bronze accents. The head and face are not human: use a single glowing symmetric teal geometric network emblem as the entire face, with no eyes, nose, mouth, hair, ears, skin, or human anatomy above the robe. The emblem should evoke a modern web-network glyph without text or a copied corporate logo.
+Animation: calm breathing, gentle robe flutter, slow emblem pulse and a few tiny teal network motes; seated meditation base remains fixed.
+Layout: exact 2 rows x 3 columns, centered in the central 58% safe area, matching scale/camera across all cells, stable base anchor at 80%, generous padding, no edge crossings.
+Background: perfectly flat #FF00FF chroma-key only.
+Avoid: floor, shadows, architecture, censer, altar, UI, letters, text, watermark, card frame, grid lines, magenta on the subject, scary, villain, realistic person, humanoid face.

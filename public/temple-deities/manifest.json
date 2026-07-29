@@ -1,0 +1,97 @@
+{
+  "version": 1,
+  "format": "generate2dsprite.idle.v1",
+  "frame": { "width": 512, "height": 512, "rows": 2, "cols": 3, "count": 6, "durationMs": 150, "anchor": "feet" },
+  "deities": {
+    "vercel": {
+      "sheet": "/temple-deities/vercel/idle/sheet-transparent.png",
+      "preview": "/temple-deities/vercel/idle/animation.gif",
+      "style": "friendly-chibi-human-mascot"
+    },
+    "netlify": {
+      "sheet": "/temple-deities/netlify/idle/sheet-transparent.png",
+      "preview": "/temple-deities/netlify/idle/animation.gif",
+      "style": "meditating-emblem-spirit"
+    },
+    "cloudflare": {
+      "sheet": "/temple-deities/cloudflare/idle/sheet-transparent.png",
+      "preview": "/temple-deities/cloudflare/idle/animation.gif",
+      "style": "meditating-emblem-spirit"
+    },
+    "github": {
+      "sheet": "/temple-deities/github/idle/sheet-transparent.png",
+      "preview": "/temple-deities/github/idle/animation.gif",
+      "style": "meditating-emblem-spirit"
+    },
+    "gitlab": {
+      "sheet": "/temple-deities/gitlab/idle/sheet-transparent.png",
+      "preview": "/temple-deities/gitlab/idle/animation.gif",
+      "style": "meditating-emblem-spirit"
+    },
+    "bitbucket": {
+      "sheet": "/temple-deities/bitbucket/idle/sheet-transparent.png",
+      "preview": "/temple-deities/bitbucket/idle/animation.gif",
+      "style": "meditating-emblem-spirit"
+    },
+    "supabase": {
+      "sheet": "/temple-deities/supabase/idle/sheet-transparent.png",
+      "preview": "/temple-deities/supabase/idle/animation.gif",
+      "style": "meditating-emblem-spirit"
+    },
+    "firebase": {
+      "sheet": "/temple-deities/firebase/idle/sheet-transparent.png",
+      "preview": "/temple-deities/firebase/idle/animation.gif",
+      "style": "meditating-emblem-spirit"
+    },
+    "postgresql": {
+      "sheet": "/temple-deities/postgresql/idle/sheet-transparent.png",
+      "preview": "/temple-deities/postgresql/idle/animation.gif",
+      "style": "meditating-emblem-spirit"
+    },
+    "openai": {
+      "sheet": "/temple-deities/openai/idle/sheet-transparent.png",
+      "preview": "/temple-deities/openai/idle/animation.gif",
+      "style": "meditating-emblem-spirit"
+    },
+    "claude": {
+      "sheet": "/temple-deities/claude/idle/sheet-transparent.png",
+      "preview": "/temple-deities/claude/idle/animation.gif",
+      "style": "meditating-emblem-spirit"
+    },
+    "gemini": {
+      "sheet": "/temple-deities/gemini/idle/sheet-transparent.png",
+      "preview": "/temple-deities/gemini/idle/animation.gif",
+      "style": "meditating-emblem-spirit"
+    },
+    "aws": {
+      "sheet": "/temple-deities/aws/idle/sheet-transparent.png",
+      "preview": "/temple-deities/aws/idle/animation.gif",
+      "style": "meditating-emblem-spirit"
+    },
+    "gcp": {
+      "sheet": "/temple-deities/google-cloud/idle/sheet-transparent.png",
+      "preview": "/temple-deities/google-cloud/idle/animation.gif",
+      "style": "meditating-emblem-spirit"
+    },
+    "azure": {
+      "sheet": "/temple-deities/azure/idle/sheet-transparent.png",
+      "preview": "/temple-deities/azure/idle/animation.gif",
+      "style": "meditating-emblem-spirit"
+    },
+    "sentry": {
+      "sheet": "/temple-deities/sentry/idle/sheet-transparent.png",
+      "preview": "/temple-deities/sentry/idle/animation.gif",
+      "style": "meditating-emblem-spirit"
+    },
+    "datadog": {
+      "sheet": "/temple-deities/datadog/idle/sheet-transparent.png",
+      "preview": "/temple-deities/datadog/idle/animation.gif",
+      "style": "meditating-emblem-spirit"
+    },
+    "grafana": {
+      "sheet": "/temple-deities/grafana/idle/sheet-transparent.png",
+      "preview": "/temple-deities/grafana/idle/animation.gif",
+      "style": "meditating-emblem-spirit"
+    }
+  }
+}

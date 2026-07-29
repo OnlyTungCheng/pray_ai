@@ -1,0 +1,15 @@
+{
+  "version": 1,
+  "mode": "scene_mode",
+  "visualModel": "layered_raster",
+  "runtimeObjectModel": ["interactive_scene_objects", "foreground_occluders"],
+  "engineTarget": "project-native React",
+  "stageCanvas": { "width": 1536, "height": 864 },
+  "layers": [
+    { "id": "backdrop", "src": "/cyber-temple-background-v1.png", "zIndex": 0, "parallax": 2 },
+    { "id": "foreground-depth", "src": "/temple-scene-v1/cyber-temple-foreground-depth.png", "zIndex": 10, "parallax": 9 },
+    { "id": "atmosphere", "runtime": "CSS", "zIndex": 20 },
+    { "id": "hero-censer", "runtime": "CenserSection", "zIndex": 30 },
+    { "id": "foreground-rim", "runtime": "CenserSection", "zIndex": 35 }
+  ]
+}

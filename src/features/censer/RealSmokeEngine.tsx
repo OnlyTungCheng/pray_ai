@@ -1,12 +1,9 @@
 import { useEffect, useRef } from 'react';
-import type { IncenseStick } from '../../types';
-
 interface RealSmokeEngineProps {
-  sticks: IncenseStick[];
   isRemix?: boolean;
 }
 
-export default function RealSmokeEngine({ sticks, isRemix }: RealSmokeEngineProps) {
+export default function RealSmokeEngine({ isRemix }: RealSmokeEngineProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
@@ -185,7 +182,7 @@ export default function RealSmokeEngine({ sticks, isRemix }: RealSmokeEngineProp
       time++;
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-      const emberTips = document.querySelectorAll('.joss-ember-tip');
+      const emberTips = canvas.parentElement?.parentElement?.querySelectorAll<HTMLElement>('[data-incense-tip]') ?? [];
       const canvasRect = canvas.getBoundingClientRect();
 
       emberTips.forEach((tipEl) => {
@@ -193,6 +190,7 @@ export default function RealSmokeEngine({ sticks, isRemix }: RealSmokeEngineProp
         const tipX = rect.left + rect.width / 2 - canvasRect.left;
         const tipY = rect.top + rect.height / 2 - canvasRect.top;
 
+        const phase = tipEl.dataset.incenseTip;
         if (isRemix) {
           // Shoot out 4 glowing sparkler particles per tip in Remix mode!
           for (let k = 0; k < 4; k++) {
@@ -200,7 +198,8 @@ export default function RealSmokeEngine({ sticks, isRemix }: RealSmokeEngineProp
           }
         } else {
           // Gentle incense smoke in Basic mode
-          if (smokeParticles.length < 140 && Math.random() < 0.7) {
+          const smokeRate = phase === 'dying' ? 0.18 : phase === 'igniting' ? 0.9 : 0.55;
+          if (smokeParticles.length < 140 && Math.random() < smokeRate) {
             smokeParticles.push(new FluidSmokeParticle(tipX, tipY));
           }
         }
@@ -235,7 +234,7 @@ export default function RealSmokeEngine({ sticks, isRemix }: RealSmokeEngineProp
       window.removeEventListener('resize', updateSize);
       cancelAnimationFrame(animationFrameId);
     };
-  }, [sticks, isRemix]);
+  }, [isRemix]);
 
   return (
     <canvas

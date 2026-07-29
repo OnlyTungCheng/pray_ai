@@ -1,0 +1,9 @@
+Use case: stylized-concept
+Asset type: production 2D animated character sprite sheet for a web-based 2.5D cyber temple scene.
+Input images: current cyber temple background as palette and material reference; a geometry-only 2 rows x 3 columns guide for the six invisible cell positions.
+Primary request: six-frame idle loop for Thần Vercel, an original sacred technology deity embodying deployment and edge networks.
+Style: friendly chibi clean-HD 2.5D game character art, a cute youthful guardian with a slightly oversized round head, soft kind eyes and a gentle smile, compact small body, short layered ceremonial robe in charcoal and bronze, restrained ivory and warm-gold edge light, small abstract triangular halo motif, subtle luminous core. Not a villain, not a warrior boss, not intimidating.
+Animation: gentle breathing, a small blink, robe-edge flutter and slow halo pulse only; fixed feet/base contact.
+Layout: exact 2 rows x 3 columns, full body centered in each cell, central 58% safe area, matching camera distance and scale, stable feet anchor at 80%, very generous padding, no edge crossings.
+Background: perfectly flat #FF00FF chroma-key only.
+Avoid: floor plane, cast shadow, censer, altar, architecture, UI, text, letters, brand logos, watermark, grid lines, magenta on the deity.

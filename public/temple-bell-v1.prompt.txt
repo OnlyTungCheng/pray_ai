@@ -1,0 +1,7 @@
+Use case: stylized-concept
+Asset type: a single interactive temple bell prop for a Vietnamese developer prayer-room website.
+Primary request: Create one elegant hanging East-Asian bronze temple bell, front 3/4 view. Heavy antiqued brass with warm amber rim-light, carved cloud and circuit-inspired motifs, a visible dark wooden striker hanging on a short red cord beside it, and a small red-and-gold tassel. The bell must look tactile, ceremonial and premium, matching a dark cyber-temple altar scene.
+Scene/backdrop: perfectly flat solid #FF00FF chroma-key background. No floor, wall, temple room, shadows, reflection, smoke, particles, glow haze, or gradient.
+Composition/framing: one full bell and striker, centered, fully contained with generous transparent-ready padding on every side. Use a tall near-square composition; keep the top suspension point near the upper third and the bell body centered. No part may touch any edge.
+Style/medium: clean HD stylized 3D game prop, polished materials, restrained cyber-temple detailing.
+Constraints: no people, hands, incense, censer, altar, text, logo, watermark, UI, other objects, or magenta in the bell.

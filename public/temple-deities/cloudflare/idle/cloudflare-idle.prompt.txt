@@ -1,0 +1,8 @@
+Use case: stylized-concept
+Asset type: production 2D animated chibi meditation-spirit sprite sheet for a web-based 2.5D cyber temple scene.
+Primary request: six-frame idle loop for Thần Cloudflare, an original friendly edge-and-cloud-network spirit sitting cross-legged in meditation.
+Style: clean-HD 2.5D game art, cute compact chibi body in a short ceremonial robe, cloud-white, amber and orange accents that match the temple lanterns. The head and face are not human: use a single friendly abstract orange cloud-and-sun geometric emblem as the entire face, with no eyes, nose, mouth, hair, ears, skin, or human anatomy above the robe. The emblem should evoke cloud routing without text or a copied corporate logo.
+Animation: calm breathing, gentle robe flutter, slow warm cloud-emblem pulse and a few tiny amber edge sparks; seated meditation base remains fixed.
+Layout: exact 2 rows x 3 columns, centered in the central 58% safe area, matching scale/camera across all cells, stable base anchor at 80%, generous padding, no edge crossings.
+Background: perfectly flat #FF00FF chroma-key only.
+Avoid: floor, shadows, architecture, censer, altar, UI, letters, text, watermark, card frame, grid lines, magenta on the subject, scary, villain, realistic person, humanoid face.

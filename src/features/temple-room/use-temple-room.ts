@@ -20,8 +20,12 @@ export type RoomSnapshot = {
   incenseCount: number;
   bellCount: number;
   prayerCount: number;
+  offeringCount?: number;
   energy: number;
   revision: number;
+  hallId?: string | null;
+  primaryDeityId?: string | null;
+  supportDeityIds?: string[];
 };
 
 type Participant = {
@@ -29,6 +33,10 @@ type Participant = {
   displayName: string;
   activity: "idle" | "praying";
   joinedAt: string;
+  /** Seat slot index (0..MAX_SEAT_SLOTS-1), or null if not seated. */
+  seatSlot: number | null;
+  /** Chosen chibi avatar id, or null if none chosen yet. */
+  avatarId: string | null;
 };
 
 type RoomActionPayload = {
@@ -40,7 +48,8 @@ type RoomActionPayload = {
     | "ring_bell"
     | "start_praying"
     | "finish_praying"
-    | "reaction";
+    | "reaction"
+    | "clear_incense";
 
   actionPayload: Record<string, unknown>;
   createdAt: string;
@@ -80,6 +89,17 @@ export function useTempleRoom({
   const processedEventIdsRef = useRef(
     new Set<string>(),
   );
+
+  // Tracks this client's own last-known presence fields (activity/seat/avatar)
+  // across re-tracks (reconnects, updateActivity, updateSeat) — without this,
+  // calling channel.track() again from updateActivity() would silently reset
+  // seatSlot/avatarId back to null, since Presence has no partial-update
+  // concept: each track() call replaces this client's entire presence state.
+  const ownPresenceRef = useRef<{
+    activity: Participant["activity"];
+    seatSlot: number | null;
+    avatarId: string | null;
+  }>({ activity: "idle", seatSlot: null, avatarId: null });
 
   const applyRealtimeEvent = useCallback(
     (event: RoomActionPayload) => {
@@ -181,7 +201,9 @@ export function useTempleRoom({
           const trackResult = await channel.track({
             userId: user.id,
             displayName: user.displayName,
-            activity: "idle",
+            activity: ownPresenceRef.current.activity,
+            seatSlot: ownPresenceRef.current.seatSlot,
+            avatarId: ownPresenceRef.current.avatarId,
             joinedAt: new Date().toISOString(),
           });
 
@@ -229,6 +251,8 @@ export function useTempleRoom({
   ) {
     const channel = channelRef.current;
 
+    ownPresenceRef.current = { ...ownPresenceRef.current, activity };
+
     if (!channel) {
       return;
     }
@@ -237,6 +261,38 @@ export function useTempleRoom({
       userId: user.id,
       displayName: user.displayName,
       activity,
+      seatSlot: ownPresenceRef.current.seatSlot,
+      avatarId: ownPresenceRef.current.avatarId,
+      joinedAt: new Date().toISOString(),
+    });
+  }
+
+  /**
+   * Updates this client's own seatSlot/avatarId in Presence — called after
+   * POST /api/rooms/[roomId]/seat has already confirmed the claim server-side
+   * (see docs/prd-chibi-avatar-seats.md §3.6). Presence itself is not the
+   * source of truth for who "wins" a seat — it only broadcasts a result the
+   * server has already decided, exactly like updateActivity does for
+   * start_praying/finish_praying today.
+   */
+  async function updateSeat(
+    seatSlot: number | null,
+    avatarId: string | null,
+  ) {
+    const channel = channelRef.current;
+
+    ownPresenceRef.current = { ...ownPresenceRef.current, seatSlot, avatarId };
+
+    if (!channel) {
+      return;
+    }
+
+    await channel.track({
+      userId: user.id,
+      displayName: user.displayName,
+      activity: ownPresenceRef.current.activity,
+      seatSlot,
+      avatarId,
       joinedAt: new Date().toISOString(),
     });
   }
@@ -247,5 +303,6 @@ export function useTempleRoom({
     onlineCount: participants.length,
     connectionStatus,
     updateActivity,
+    updateSeat,
   };
 }

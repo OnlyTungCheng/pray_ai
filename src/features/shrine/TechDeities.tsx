@@ -1,4 +1,5 @@
-import type { Deity } from '../../types';
+import type { Deity } from "../../types";
+import Image from "next/image";
 
 export interface PartyDeity extends Deity {
   partyImg: string;
@@ -6,35 +7,35 @@ export interface PartyDeity extends Deity {
 
 export const DEITIES: PartyDeity[] = [
   {
-    id: 'codex',
-    name: 'Thần Codex',
-    title: 'Speed & Matrix Gen',
-    statueImg: '/codex_chibi.jpg?v=2',
-    partyImg: '/codex_party.jpg?v=2',
-    glowColor: 'rgba(16, 185, 129, 0.8)',
-    borderColor: 'border-emerald-400',
-    tagBg: 'bg-emerald-500 text-stone-950 border-emerald-300'
+    id: "codex",
+    name: "Thần Codex",
+    title: "Speed & Matrix Gen",
+    statueImg: "/codex_chibi.jpg?v=2",
+    partyImg: "/codex_party.jpg?v=2",
+    glowColor: "rgba(16, 185, 129, 0.8)",
+    borderColor: "border-emerald-400",
+    tagBg: "bg-emerald-500 text-stone-950 border-emerald-300",
   },
   {
-    id: 'claude',
-    name: 'Thần Claude',
-    title: 'Architecture & Logic',
-    statueImg: '/claude_chibi.jpg?v=2',
-    partyImg: '/claude_party.jpg?v=2',
-    glowColor: 'rgba(245, 158, 11, 0.9)',
-    borderColor: 'border-amber-400',
-    tagBg: 'bg-amber-400 text-stone-950 border-amber-200'
+    id: "claude",
+    name: "Thần Claude",
+    title: "Architecture & Logic",
+    statueImg: "/claude_chibi.jpg?v=2",
+    partyImg: "/claude_party.jpg?v=2",
+    glowColor: "rgba(245, 158, 11, 0.9)",
+    borderColor: "border-amber-400",
+    tagBg: "bg-amber-400 text-stone-950 border-amber-200",
   },
   {
-    id: 'kiro',
-    name: 'Thần Kiro',
-    title: 'Zero Bug Shield',
-    statueImg: '/kiro_chibi.jpg?v=2',
-    partyImg: '/kiro_party.jpg?v=2',
-    glowColor: 'rgba(168, 85, 247, 0.8)',
-    borderColor: 'border-purple-400',
-    tagBg: 'bg-purple-400 text-stone-950 border-purple-200'
-  }
+    id: "kiro",
+    name: "Thần Kiro",
+    title: "Zero Bug Shield",
+    statueImg: "/kiro_chibi.jpg?v=2",
+    partyImg: "/kiro_party.jpg?v=2",
+    glowColor: "rgba(168, 85, 247, 0.8)",
+    borderColor: "border-purple-400",
+    tagBg: "bg-purple-400 text-stone-950 border-purple-200",
+  },
 ];
 
 interface TechDeitiesProps {
@@ -72,17 +73,21 @@ function SpeakerTower() {
   );
 }
 
-export default function TechDeities({ themeMode, activeDeityId, onSelectDeity }: TechDeitiesProps) {
-  const isRemix = themeMode === 'remix';
+export default function TechDeities({
+  themeMode,
+  activeDeityId,
+  onSelectDeity,
+}: TechDeitiesProps) {
+  const isRemix = themeMode === "remix";
 
   return (
-    <div className="relative flex flex-col items-center justify-center pt-1 z-0 w-full max-w-5xl mx-auto select-none">
+    <div className="relative flex flex-col items-center justify-center pt-4 md:pt-10 mt-2 md:mt-6 z-0 w-full max-w-5xl mx-auto select-none">
       {/* Oriental Shrine Pavilion vs Remix Party Club */}
       <div
         className={`relative w-full max-w-4xl rounded-t-[2.5rem] border-t-8 border-x-8 transition-all duration-700 p-3 md:p-5 ${
           isRemix
-            ? 'border-fuchsia-500 bg-gradient-to-b from-[#581c87] via-[#3b0764] to-stone-900 shadow-[0_0_90px_rgba(236,72,153,0.9)] animate-pulse mt-6 md:mt-8'
-            : 'border-amber-500 bg-gradient-to-b from-[#451a03] via-[#292524] to-stone-900 shadow-[0_0_80px_rgba(245,158,11,0.5)]'
+            ? "border-fuchsia-500 bg-gradient-to-b from-[#581c87] via-[#3b0764] to-stone-900 shadow-[0_0_90px_rgba(236,72,153,0.9)] animate-pulse mt-6 md:mt-8"
+            : "border-amber-500 bg-gradient-to-b from-[#451a03] via-[#292524] to-stone-900 shadow-[0_0_80px_rgba(245,158,11,0.5)]"
         }`}
       >
         {/* Roof Plaque Banner (Only shown in Basic Mode) */}
@@ -115,8 +120,8 @@ export default function TechDeities({ themeMode, activeDeityId, onSelectDeity }:
         <div
           className={`relative flex justify-center items-end gap-3 md:gap-5 pb-3 rounded-2xl p-3 border-2 transition-all duration-500 ${
             isRemix
-              ? 'bg-[#2e1065] border-fuchsia-400 shadow-[inset_0_0_50px_rgba(236,72,153,0.6)]'
-              : 'bg-[#1c1917] border-amber-500/60 shadow-[inset_0_0_50px_rgba(245,158,11,0.3)]'
+              ? "bg-[#2e1065] border-fuchsia-400 shadow-[inset_0_0_50px_rgba(236,72,153,0.6)]"
+              : "bg-[#1c1917] border-amber-500/60 shadow-[inset_0_0_50px_rgba(245,158,11,0.3)]"
           }`}
         >
           {/* Left Side: Couplet Pillar vs Speaker Tower */}
@@ -125,10 +130,9 @@ export default function TechDeities({ themeMode, activeDeityId, onSelectDeity }:
           ) : (
             <div
               lang="zh-Hant"
-              className="hidden sm:flex border-2 rounded-xl px-2.5 py-6 text-base/6 text-center tracking-widest select-none shadow-2xl self-center font-black border-amber-400 bg-gradient-to-b from-red-900 via-amber-900 to-red-900 text-amber-200 shadow-amber-500/50"
+              className="hidden sm:flex border-2 rounded-xl px-2.5 py-6 text-base/6 text-center tracking-widest select-none shadow-2xl self-center font-black border-amber-400 bg-gradient-to-b from-red-900 via-amber-900 to-red-900 text-amber-200 shadow-amber-500/50 font-display"
               style={{
-                writingMode: 'vertical-rl',
-                fontFamily: 'Hiragino Mincho ProN, MingliU, Noto Serif TC, serif'
+                writingMode: "vertical-rl",
               }}
             >
               <span className="text-amber-200 drop-shadow-md">
@@ -140,7 +144,7 @@ export default function TechDeities({ themeMode, activeDeityId, onSelectDeity }:
           {/* 3 Meditating Mascots / Dân Chơi Đi Bar Mascots */}
           {DEITIES.map((deity) => {
             const displayName = isRemix
-              ? deity.name.replace('Thần', 'Dân Chơi')
+              ? deity.name.replace("Thần", "Dân Chơi")
               : deity.name;
             const imgSrc = isRemix ? deity.partyImg : deity.statueImg;
             const isSelected = activeDeityId === deity.id;
@@ -152,34 +156,38 @@ export default function TechDeities({ themeMode, activeDeityId, onSelectDeity }:
                 className={`relative flex flex-col items-center rounded-2xl overflow-hidden border-4 cursor-pointer transition-all duration-300 ${
                   isSelected
                     ? isRemix
-                      ? 'border-pink-300 ring-4 ring-pink-500 shadow-[0_0_40px_rgba(236,72,153,1)] scale-105 z-10'
-                      : 'border-amber-300 ring-4 ring-amber-500 shadow-[0_0_35px_rgba(245,158,11,1)] scale-105 z-10'
-                    : 'border-transparent opacity-60 hover:opacity-90 hover:scale-[1.02]'
+                      ? "border-pink-300 ring-4 ring-pink-500 shadow-[0_0_40px_rgba(236,72,153,1)] scale-105 z-10"
+                      : "border-amber-300 ring-4 ring-amber-500 shadow-[0_0_35px_rgba(245,158,11,1)] scale-105 z-10"
+                    : "border-transparent opacity-60 hover:opacity-90 hover:scale-[1.02]"
                 } shadow-[0_15px_45px_rgba(0,0,0,0.95)] bg-stone-900 flex-1 max-w-[30%]`}
               >
                 {/* Prominent Bright Name Header */}
                 <div
                   className={`w-full text-center py-1.5 font-black text-xs md:text-sm font-sans border-b uppercase tracking-wider ${
                     isRemix
-                      ? 'bg-gradient-to-r from-fuchsia-600 via-pink-500 to-purple-600 text-white border-pink-300'
+                      ? "bg-gradient-to-r from-fuchsia-600 via-pink-500 to-purple-600 text-white border-pink-300"
                       : deity.tagBg
                   }`}
                 >
-                  {isRemix ? '🕶️' : '🧘‍♂️'} {displayName}
+                  {isRemix ? "🕶️" : "🧘‍♂️"} {displayName}
                 </div>
 
                 {/* Party Mascot Image */}
-                <div className="relative overflow-hidden w-full bg-stone-950 flex items-center justify-center">
-                  <img
+                <div className="relative overflow-hidden w-full h-[24vh] md:h-[29vh] bg-stone-950 flex items-center justify-center">
+                  <Image
                     src={imgSrc}
                     alt={displayName}
-                    className={`h-[24vh] md:h-[29vh] w-full object-cover brightness-110 contrast-105 ${
-                      isRemix && isSelected ? 'animate-bounce' : ''
+                    fill
+                    sizes="(max-width: 768px) 30vw, 25vw"
+                    priority
+                    className={`object-cover brightness-110 contrast-105 ${
+                      isRemix && isSelected ? "animate-bounce" : ""
                     }`}
                     style={{
-                      filter: isRemix && isSelected
-                        ? 'drop-shadow(0 0 30px rgba(236,72,153,1))'
-                        : `drop-shadow(0 0 25px ${deity.glowColor})`
+                      filter:
+                        isRemix && isSelected
+                          ? "drop-shadow(0 0 30px rgba(236,72,153,1))"
+                          : `drop-shadow(0 0 25px ${deity.glowColor})`,
                     }}
                   />
                 </div>
@@ -193,10 +201,9 @@ export default function TechDeities({ themeMode, activeDeityId, onSelectDeity }:
           ) : (
             <div
               lang="zh-Hant"
-              className="hidden sm:flex border-2 rounded-2xl px-2.5 py-6 text-base/6 text-center tracking-widest select-none shadow-2xl self-center font-black border-amber-400 bg-gradient-to-b from-red-900 via-amber-900 to-red-900 text-amber-200 shadow-amber-500/50"
+              className="hidden sm:flex border-2 rounded-2xl px-2.5 py-6 text-base/6 text-center tracking-widest select-none shadow-2xl self-center font-black border-amber-400 bg-gradient-to-b from-red-900 via-amber-900 to-red-900 text-amber-200 shadow-amber-500/50 font-display"
               style={{
-                writingMode: 'vertical-rl',
-                fontFamily: 'Hiragino Mincho ProN, MingliU, Noto Serif TC, serif'
+                writingMode: "vertical-rl",
               }}
             >
               <span className="text-amber-200 drop-shadow-md">
@@ -210,8 +217,8 @@ export default function TechDeities({ themeMode, activeDeityId, onSelectDeity }:
         <div
           className={`h-4 w-full rounded-b-xl border-t-2 shadow-2xl transition-all duration-500 ${
             isRemix
-              ? 'bg-gradient-to-r from-fuchsia-800 via-pink-500 to-purple-800 border-white'
-              : 'bg-gradient-to-r from-red-800 via-amber-400 to-red-800 border-amber-200'
+              ? "bg-gradient-to-r from-fuchsia-800 via-pink-500 to-purple-800 border-white"
+              : "bg-gradient-to-r from-red-800 via-amber-400 to-red-800 border-amber-200"
           }`}
         />
       </div>

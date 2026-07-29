@@ -12,6 +12,22 @@ export interface CreateRoomInput {
   /** Optional human-readable title override; defaults to a generated one. */
   title?: string;
   description?: string;
+  /**
+   * Which Điện (Hall) this project prayer room belongs to, and which Thần
+   * (Deity) preside over it — per docs/than.md. `hallId` is a real DB id
+   * (halls table). `primaryDeityId`/`supportDeityIds` are deity *slugs*
+   * from the hardcoded src/features/halls/deity-catalog.ts (e.g.
+   * "vercel"), NOT database ids — Deity is not a DB table (see
+   * schema/0016_deities_hardcode_migration.sql). All optional/nullable: a
+   * room may be created without picking a hall at all (matches the system
+   * lobby's shape, which predates this feature). Caller (the API route) is
+   * responsible for running validateDeitySelection() from
+   * hall-catalog-service.ts before this reaches the database — this
+   * function does not validate, it only persists.
+   */
+  hallId?: string | null;
+  primaryDeityId?: string | null;
+  supportDeityIds?: string[];
 }
 
 export interface CreatedRoom {
@@ -23,8 +39,12 @@ export interface CreatedRoom {
   incenseCount: number;
   bellCount: number;
   prayerCount: number;
+  offeringCount: number;
   energy: number;
   revision: number;
+  hallId: string | null;
+  primaryDeityId: string | null;
+  supportDeityIds: string[];
 }
 
 const SLUG_MAX_LENGTH = 48;
@@ -88,7 +108,10 @@ export async function createRoom(
       event_type: input.eventType,
       prayer: input.prayer,
       title: input.title ?? defaultTitle(input),
-      description: input.description ?? null
+      description: input.description ?? null,
+      hall_id: input.hallId ?? null,
+      primary_deity_id: input.primaryDeityId ?? null,
+      support_deity_ids: input.supportDeityIds ?? []
     })
     .select(
       `
@@ -100,8 +123,12 @@ export async function createRoom(
         incense_count,
         bell_count,
         prayer_count,
+        offering_count,
         energy,
-        revision
+        revision,
+        hall_id,
+        primary_deity_id,
+        support_deity_ids
       `
     )
     .single();
@@ -119,7 +146,11 @@ export async function createRoom(
     incenseCount: data.incense_count,
     bellCount: data.bell_count,
     prayerCount: data.prayer_count,
+    offeringCount: data.offering_count,
     energy: data.energy,
-    revision: data.revision
+    revision: data.revision,
+    hallId: data.hall_id,
+    primaryDeityId: data.primary_deity_id,
+    supportDeityIds: data.support_deity_ids ?? []
   };
 }
