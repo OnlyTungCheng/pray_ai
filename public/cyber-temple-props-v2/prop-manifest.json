@@ -1,0 +1,30 @@
+{
+  "version": 1,
+  "sourceSheet": "sheet-transparent.png",
+  "props": [
+    {
+      "id": "hanging-cyber-lantern",
+      "file": "cyber-temple-1.png",
+      "placement": "upper left or upper right of the shrine hall",
+      "recommendedDisplayHeight": 180
+    },
+    {
+      "id": "terminal-pedestal",
+      "file": "cyber-temple-2.png",
+      "placement": "side of the main altar",
+      "recommendedDisplayHeight": 150
+    },
+    {
+      "id": "circuit-power-node",
+      "file": "cyber-temple-3.png",
+      "placement": "lower side of the shrine hall",
+      "recommendedDisplayHeight": 130
+    },
+    {
+      "id": "circuit-wall-ornament",
+      "file": "cyber-temple-4.png",
+      "placement": "behind the deity stage, one per side",
+      "recommendedDisplayHeight": 170
+    }
+  ]
+}

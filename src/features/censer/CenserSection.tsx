@@ -3,11 +3,21 @@ import { playKnockSound } from '../../utils/sound';
 import RealSmokeEngine from './RealSmokeEngine';
 import type { IncenseStick } from '../../types';
 
-const yRatio = 21 / 135;
-const wRatio = 94 / 135;
-const topRatio = 153 / 259;
-const hRatio = 84 / 259;
-const receptacleHRatio = 170 / 259;
+const BASIC_ALTAR_RECEPTACLE = {
+  left: 0.35,
+  width: 0.3,
+  top: 0.15,
+  height: 0.16,
+  stickBaseY: 0.27
+};
+
+const REMIX_RECEPTACLE = {
+  left: 0.39,
+  width: 0.22,
+  top: 0.42,
+  height: 0.2,
+  stickBaseY: 0.56
+};
 
 interface CenserSVGProps {
   onKnock: () => void;
@@ -15,7 +25,7 @@ interface CenserSVGProps {
 }
 
 // 1. Traditional Incense Urn SVG (Basic Theme)
-function CenserSVG({ onKnock }: CenserSVGProps) {
+export function CenserSVG({ onKnock }: CenserSVGProps) {
   return (
     <svg
       role="img"
@@ -81,7 +91,7 @@ function CenserSVG({ onKnock }: CenserSVGProps) {
 }
 
 // 2. Bàn DJ & Mâm Đĩa Than Neon SVG (Vinahouse Remix Theme)
-function DJTurntableSVG({ onKnock }: CenserSVGProps) {
+export function DJTurntableSVG({ onKnock }: CenserSVGProps) {
   return (
     <svg
       role="img"
@@ -214,6 +224,14 @@ let dragStartX = 0;
 let dragStartY = 0;
 let isTouch = false;
 
+function TraditionalIncenseSprite({ isBurning }: { isBurning: boolean }) {
+  return (
+    <div className={`joss-sprite ${isBurning ? 'is-burning' : 'is-unlit'}`} aria-hidden="true">
+      {isBurning && <div className="joss-ember-tip" />}
+    </div>
+  );
+}
+
 function JossStick({ pos, draggable, onDrop, isRemix }: JossStickProps) {
   const initialLeft = useRef(0);
   const initialTop = useRef(0);
@@ -312,7 +330,7 @@ function JossStick({ pos, draggable, onDrop, isRemix }: JossStickProps) {
     );
   }
 
-  const className = `joss ${draggable ? 'draggable ' : ''}${isBurning ? 'burn ' : ''}`;
+  const className = `joss joss-sprite-root ${draggable ? 'draggable ' : ''}${isBurning ? 'burn ' : ''}`;
 
   return (
     <>
@@ -323,7 +341,7 @@ function JossStick({ pos, draggable, onDrop, isRemix }: JossStickProps) {
           style={{ ...style, marginLeft: 4, marginTop: 2 }}
           ref={(el) => { stickRefs.current[1] = el; }}
         >
-          {isBurning && <div className="joss-ember-tip" />}
+          <TraditionalIncenseSprite isBurning={isBurning} />
         </div>
       )}
       {pos.num > 2 && (
@@ -333,7 +351,7 @@ function JossStick({ pos, draggable, onDrop, isRemix }: JossStickProps) {
           style={{ ...style, marginLeft: -4, marginTop: 2 }}
           ref={(el) => { stickRefs.current[2] = el; }}
         >
-          {isBurning && <div className="joss-ember-tip" />}
+          <TraditionalIncenseSprite isBurning={isBurning} />
         </div>
       )}
       <div
@@ -345,7 +363,7 @@ function JossStick({ pos, draggable, onDrop, isRemix }: JossStickProps) {
         onMouseDown={draggable ? handleStart : undefined}
         onTouchStart={draggable ? handleStart : undefined}
       >
-        {isBurning && <div className="joss-ember-tip" />}
+        <TraditionalIncenseSprite isBurning={isBurning} />
       </div>
     </>
   );
@@ -368,6 +386,7 @@ export default function CenserSection({ sticks, onAddStick, onClearCenser, onOpe
 
   const isRemix = themeMode === 'remix';
   const hasActiveIncense = sticks.length > 0;
+  const activeReceptacle = isRemix ? REMIX_RECEPTACLE : BASIC_ALTAR_RECEPTACLE;
 
   const updateHandStick = (currentHand: IncenseStick, buttonEl: HTMLElement, containerEl: HTMLElement | null) => {
     const parentWidth = containerEl?.offsetWidth || 1;
@@ -387,20 +406,21 @@ export default function CenserSection({ sticks, onAddStick, onClearCenser, onOpe
   const handleDrop = useCallback((pos: IncenseStick, draggedEl: HTMLDivElement | null) => {
     if (!censerRef.current || !draggedEl) return false;
     const { offsetTop, offsetLeft, offsetWidth, offsetHeight } = censerRef.current;
+    const receptacle = isRemix ? REMIX_RECEPTACLE : BASIC_ALTAR_RECEPTACLE;
 
-    let relativeX = draggedEl.offsetLeft - offsetLeft - yRatio * offsetWidth;
-    relativeX /= wRatio * offsetWidth;
+    let relativeX = draggedEl.offsetLeft - offsetLeft - receptacle.left * offsetWidth;
+    relativeX /= receptacle.width * offsetWidth;
 
     const isInsideX = relativeX > 0 && relativeX < 1;
     const isInsideY =
-      draggedEl.offsetTop > offsetTop + topRatio * offsetHeight &&
-      draggedEl.offsetTop - draggedEl.offsetHeight < offsetTop + (topRatio + hRatio) * offsetHeight;
+      draggedEl.offsetTop > offsetTop + receptacle.top * offsetHeight &&
+      draggedEl.offsetTop - draggedEl.offsetHeight < offsetTop + (receptacle.top + receptacle.height) * offsetHeight;
 
     if (isInsideX && isInsideY) {
       const newStick: IncenseStick = {
         ...pos,
         x: relativeX,
-        y: 0.97 + 0.03 * Math.random(),
+        y: receptacle.stickBaseY + 0.03 * Math.random(),
         exp: Date.now() + 3600000
       };
       onAddStick(newStick);
@@ -410,7 +430,7 @@ export default function CenserSection({ sticks, onAddStick, onClearCenser, onOpe
       return true;
     }
     return false;
-  }, [onAddStick]);
+  }, [isRemix, onAddStick]);
 
   return (
     <div className="relative pt-2">
@@ -431,10 +451,27 @@ export default function CenserSection({ sticks, onAddStick, onClearCenser, onOpe
           ref={censerRef}
           aria-describedby="explain"
         >
+          {/* Backing Ambient Glow */}
+          <div className={`absolute bottom-0 left-1/2 -translate-x-1/2 w-48 h-20 rounded-full blur-[40px] opacity-60 mix-blend-screen pointer-events-none -z-10 transition-colors duration-700 ${
+            isRemix ? 'bg-fuchsia-500 shadow-[0_0_60px_#ec4899]' : 'bg-amber-600 shadow-[0_0_50px_#d97706]'
+          }`} />
+
           {isRemix ? (
-            <DJTurntableSVG onKnock={playKnockSound} />
+            <img
+              src="/remix-dj-altar-v1.png"
+              alt="Bàn DJ đền cầu nguyện"
+              className="h-full w-auto max-w-[72vw] object-contain pointer-events-auto"
+              draggable={false}
+              onClick={playKnockSound}
+            />
           ) : (
-            <CenserSVG onKnock={playKnockSound} />
+            <img
+              src="/basic-altar-censer-v1.png"
+              alt="Bàn thờ và bát hương"
+              className="h-full w-auto max-w-[72vw] object-contain pointer-events-auto"
+              draggable={false}
+              onClick={playKnockSound}
+            />
           )}
 
           {/* Fluid Physics Canvas Engine (Smoke in Basic Mode / Sparkler Fireworks in Remix Mode) */}
@@ -446,9 +483,9 @@ export default function CenserSection({ sticks, onAddStick, onClearCenser, onOpe
             aria-label="Incense / Sparkler receptacle"
             className="absolute top-0"
             style={{
-              left: `${100 * yRatio}%`,
-              height: `${100 * receptacleHRatio}%`,
-              width: `${100 * wRatio}%`
+              left: `${100 * activeReceptacle.left}%`,
+              height: `${100 * (activeReceptacle.top + activeReceptacle.height)}%`,
+              width: `${100 * activeReceptacle.width}%`
             }}
           >
             {sticks.map((stick, idx) => (

@@ -1,0 +1,7 @@
+Use case: stylized-concept
+Asset type: production 2D web-game animated incense sprite sheet.
+Primary request: Exactly a 2x2 grid sprite sheet with four sequential frames of the same single upright Vietnamese red incense stick. Frame sequence: ember dim -> ember warming -> ember brightest -> ember steady. Keep the decorative crimson stick and small gold band identical. No smoke, no detached sparks.
+Scene/backdrop: perfectly flat solid #FF00FF chroma-key background across the full sheet, with no lines, border, texture, gradient, shadows, floor, reflection or labels.
+Composition/framing: Four equal 512x512 visual cells in a 2-column x 2-row sheet. In every cell the entire incense stick is centered and fully visible with generous pure-magenta padding on all four sides. Its bottom anchor, scale, and x-position are identical in every cell. No part of the stick or ember may touch or cross a cell edge. Do not draw cell lines.
+Style/medium: clean premium stylized 3D game prop that matches a dark Vietnamese cyber-temple, warm sacred ember.
+Constraints: Only the tiny ember brightness changes. No text, watermark, hands, incense holder, bowl, ash, smoke, flame larger than a tiny ember, other objects, or magenta in the subject.

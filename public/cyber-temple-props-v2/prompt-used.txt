@@ -1,0 +1,4 @@
+Use case: stylized-concept
+Asset type: 2x2 transparent prop pack for the Cyber Temple website.
+
+Create four compact environmental props that match the Cyber Temple hall's polished stylized 3D clean-HD visual language: a hanging cyber temple lantern, a compact terminal pedestal, an antique-bronze circuit power node, and a lacquered wood-and-bronze circuit wall ornament. Render each as one isolated, front-facing 3/4 prop with generous padding in its own 2x2 cell. Use dark lacquer wood, antique bronze, charcoal metal, warm amber lighting and restrained indigo accents. Use a perfectly flat #FF00FF chroma-key background; no text, logos, watermark, UI, floor plane or shadows.

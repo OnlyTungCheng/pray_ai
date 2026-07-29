@@ -1,342 +1,68 @@
-Mình hiểu rồi. Đây không phải web “cầu nguyện” theo nghĩa tâm linh nghiêm túc, mà là một **social simulation dành cho dân công nghệ**:
-
-> Trước khi build, deploy, migrate database hoặc release production, mọi người vào “Đền Cầu Nguyện” để thực hiện nghi lễ vui, cùng nhau cầu cho hệ thống bình an.
-
-## Định vị sản phẩm
-
-**Đền Cầu Nguyện** có thể được mô tả là:
-
-> Một không gian giải trí cộng đồng dành cho developer, nơi mọi người cùng thắp hương, gõ chuông, dâng lễ và cầu cho build xanh, deploy thành công, production không lỗi.
-
-Một vài tagline phù hợp:
-
-* **Deploy bình an, production vô sự.**
-* **Nơi mọi lời cầu nguyện trước giờ release được lắng nghe.**
-* **Code đã viết. Test đã chạy. Phần còn lại xin nhờ tổ nghiệp.**
-* **May the build be green.**
-* **Không mê tín, chỉ là CI/CD đôi lúc cần niềm tin.**
-
-## Vòng lặp trải nghiệm chính
-
-Người dùng truy cập web và chọn một “điều cầu nguyện”:
-
-* Cầu build không fail.
-* Cầu deploy production thành công.
-* Cầu migration database không mất dữ liệu.
-* Cầu không có bug vào tối thứ Sáu.
-* Cầu khách hàng không đổi requirement.
-* Cầu reviewer approve PR.
-* Cầu server không sập.
-* Cầu không phải rollback.
-
-Sau đó người dùng thực hiện một nghi lễ ngắn:
-
-1. Nhập tên dự án hoặc tên bản release.
-2. Chọn loại nghi lễ.
-3. Thắp hương bằng thao tác kéo hoặc click.
-4. Gõ chuông ba lần.
-5. Dâng “lễ vật” ảo.
-6. Nhấn giữ nút cầu nguyện trong vài giây.
-7. Nhận một quẻ hoặc lời phán hài hước.
-8. Chia sẻ kết quả cho đồng đội.
-
-Ví dụ kết quả:
-
-> **Quẻ Đại Cát**
-> Build có thể xanh, nhưng hãy kiểm tra lại biến môi trường trước khi deploy.
-
-Hoặc:
-
-> **Quẻ Hung Nhẹ**
-> Có dấu hiệu thiếu migration. Không nên deploy vào thứ Sáu sau 16:00.
-
-## Tính năng MVP nên có
-
-### 1. Sảnh chính của ngôi đền
-
-Đây nên là màn hình có cảm giác “đang sống”:
-
-* Ngọn lửa và khói hương chuyển động.
-* Chuông hoặc mõ có thể tương tác.
-* Hiển thị số người đang cầu nguyện.
-* Danh sách lời cầu nguyện gần đây.
-* Hiệu ứng khi nhiều người cùng cầu nguyện.
-* Âm thanh nhẹ, mặc định tắt hoặc hỏi trước khi bật.
-
-### 2. Tạo phiên cầu nguyện
-
-Người dùng nhập:
-
-```text
-Tên dự án: Notex
-Sự kiện: Deploy production v2.4.0
-Lời cầu: Mong build xanh và không lỗi authentication
-Thời điểm deploy: 22:00
-```
-
-Hệ thống tạo một đường dẫn phòng:
-
-```text
-dencau.dev/temple/notex-v2-4
-```
-
-Người dùng gửi đường dẫn vào Slack, Discord hoặc nhóm nội bộ để mọi người vào cùng tham gia.
-
-### 3. Nghi lễ tập thể
-
-Trong một phòng, mỗi người có thể:
-
-* Thắp một nén hương.
-* Gõ chuông.
-* Thả emoji.
-* Dâng một lễ vật ảo.
-* Viết một câu cầu nguyện.
-* Tăng “linh lực deploy” của phòng.
-
-Ví dụ:
-
-```text
-🔥 24 nén hương
-🔔 63 tiếng chuông
-🙏 18 developer đang cầu nguyện
-⚡ Linh lực deploy: 87%
-```
-
-Điểm số này hoàn toàn mang tính giải trí.
-
-### 4. Lễ vật dành riêng cho developer
-
-Đây là phần tạo cá tính và khả năng viral:
-
-* Một cốc cà phê.
-* Một lon nước tăng lực.
-* Một bàn phím cơ.
-* Một con vịt cao su.
-* Một dòng Stack Overflow đã cứu dự án.
-* Một file `.env` đầy đủ.
-* Một test case cuối cùng.
-* Một ngày không họp.
-* Một pull request dưới 200 dòng.
-* Một lời hứa không deploy thứ Sáu.
-
-### 5. Quẻ deploy
-
-Sau nghi lễ, hệ thống đưa ra kết quả ngẫu nhiên nhưng có tính hài hước:
-
-**Đại cát**
-
-> Pipeline thông suốt, Docker image nhẹ nhàng, production bình an.
-
-**Cát**
-
-> Deploy được, nhưng nên chạy smoke test trước khi thông báo với khách hàng.
-
-**Bình**
-
-> Không thấy điềm xấu, cũng chưa thấy test coverage.
-
-**Hung**
-
-> Có khí lạ từ file `.env.production`. Hãy kiểm tra trước khi tiếp tục.
-
-**Đại hung**
-
-> Thời điểm hiện tại là 16:57 thứ Sáu. Xin quay lại vào sáng thứ Hai.
-
-Nên thêm dòng nhỏ:
-
-> Kết quả chỉ mang tính giải trí. CI/CD vẫn nên dựa vào test, monitoring và rollback plan.
-
-## Các trang chính
-
-Cấu trúc ban đầu chỉ cần khoảng năm route:
-
-```text
-/                       Trang ngôi đền
-/pray                   Tạo lời cầu nguyện
-/temple/[roomId]         Phòng cầu nguyện tập thể
-/oracle/[resultId]       Kết quả quẻ deploy
-/about                   Giới thiệu câu chuyện sản phẩm
-```
-
-Không nên làm dashboard phức tạp ngay từ đầu.
-
-## Stack phù hợp
-
-Với sản phẩm này, mình đề xuất:
-
-### Frontend
-
-* **Next.js App Router**
-* **React**
-* **TypeScript strict**
-* **Tailwind CSS**
-* **Motion** cho animation
-* **Howler.js** hoặc Web Audio API cho tiếng chuông, tiếng lửa
-* **Zustand** cho trạng thái nghi lễ ở client
-* **Zod** cho validation
-
-Motion phù hợp cho:
-
-* Khói hương.
-* Lửa nến.
-* Chuông rung.
-* Lễ vật bay vào bàn thờ.
-* Thanh linh lực tăng.
-* Emoji reaction nổi trên màn hình.
-
-### Backend
-
-MVP có thể dùng **Supabase**:
-
-* Anonymous session.
-* Tạo phòng.
-* Lưu lời cầu nguyện.
-* Realtime reactions.
-* Presence để hiển thị số người trong phòng.
-* PostgreSQL cho dữ liệu.
-
-Không nhất thiết bắt người dùng đăng nhập. Anonymous-first sẽ giảm ma sát và làm sản phẩm dễ viral hơn.
-
-Sau này mới thêm:
-
-* Đăng nhập GitHub.
-* Lịch sử các lần deploy.
-* Trang temple của team.
-* Bảng xếp hạng.
-* Integration với GitHub Actions, Vercel hoặc Slack.
-
-## Kiến trúc trạng thái
-
-Nên chia rõ ba lớp:
-
-### Server state
-
-Lưu trên Supabase:
-
-```ts
-type TempleRoom = {
-  id: string;
-  slug: string;
-  projectName: string;
-  eventType: "build" | "deploy" | "migration" | "release";
-  prayer: string;
-  energy: number;
-  createdAt: string;
-  expiresAt: string;
-};
-```
-
-### Realtime events
-
-Không cần lưu toàn bộ lâu dài:
-
-```ts
-type TempleEvent =
-  | { type: "LIGHT_INCENSE"; userId: string }
-  | { type: "RING_BELL"; userId: string }
-  | { type: "ADD_OFFERING"; offering: string }
-  | { type: "REACTION"; emoji: string };
-```
-
-### Client UI state
-
-Zustand chỉ giữ:
-
-```ts
-type RitualState = {
-  currentStep: number;
-  incenseLit: boolean;
-  bellCount: number;
-  selectedOffering?: string;
-  soundEnabled: boolean;
-};
-```
-
-Không đưa toàn bộ dữ liệu phòng vào Zustand nếu dữ liệu đã được quản lý bằng server hoặc realtime subscription.
-
-## Không nên làm quá sớm
-
-Ở giai đoạn đầu chưa cần:
-
-* Microservices.
-* Redux.
-* TanStack Query nếu phần lớn dữ liệu được render từ server và Supabase Realtime.
-* Hệ thống thanh toán.
-* Profile người dùng phức tạp.
-* AI sinh nội dung cho mọi tương tác.
-* Kết nối trực tiếp vào production infrastructure.
-* Blockchain, NFT hoặc token “linh lực”.
-
-MVP cần chứng minh ba điều:
-
-1. Người dùng thấy vui ngay trong 30 giây đầu.
-2. Người dùng muốn gửi link cho đồng đội.
-3. Một nhóm có thể cùng tương tác trong một phòng.
-
-## Hướng phát triển sau MVP
-
-### GitHub integration
-
-Người dùng kết nối GitHub và tạo nghi lễ trực tiếp từ pull request:
-
-```text
-Cầu cho PR #829 được approve
-Cầu cho release v3.1.0 build thành công
-```
-
-### CI/CD integration
-
-Webhook từ GitHub Actions hoặc Vercel cập nhật kết quả:
-
-```text
-✅ Build đã thành công
-🚀 Deployment đã hoàn tất
-❌ Production check thất bại
-```
-
-Khi deploy thành công, trong phòng có thể xuất hiện hiệu ứng:
-
-* Pháo giấy.
-* Chuông lớn.
-* Dòng chữ “Production bình an”.
-* Quẻ được đóng dấu “Đã linh nghiệm”.
-
-### Slack bot
-
-Lệnh:
-
-```text
-/pray deploy production-v2
-```
-
-Bot tạo phòng và gửi vào channel:
-
-> Nghi lễ deploy đã bắt đầu. Mời toàn thể engineering team vào thắp hương.
-
-## Phong cách thiết kế
-
-Không nên thiết kế quá giống một trang tôn giáo thật. Hướng phù hợp hơn là:
-
-* Pixel art hoặc 3D low-poly.
-* Cyber temple.
-* Đền truyền thống kết hợp terminal, server rack và màn hình CI.
-* Màu tối, ánh lửa ấm, điểm nhấn neon.
-* Nội dung hài hước theo văn hóa developer.
-
-Một concept hình ảnh mạnh:
-
-> Một ngôi đền cổ nằm giữa data center, hai bên là server rack, phía trước có bàn thờ đặt laptop đang chạy terminal, khói hương tạo thành biểu tượng check màu xanh.
-
-## Phiên bản MVP gọn nhất
-
-Phiên bản đầu tiên chỉ cần:
-
-* Một trang temple đẹp.
-* Một form nhập lời cầu nguyện.
-* Nghi lễ ba bước: thắp hương, gõ chuông, dâng lễ.
-* Một kết quả quẻ ngẫu nhiên.
-* Link chia sẻ.
-* Realtime counter đơn giản.
-
-Đây là phạm vi đủ nhỏ để làm nhanh nhưng vẫn truyền tải trọn vẹn ý tưởng của **Đền Cầu Nguyện**. Bước hợp lý tiếp theo là chốt **product brief, user flow và cấu trúc component** trước khi bắt đầu code.
+# PRD: Đền Cầu Nguyện (Developer Prayer Shrine)
+
+## 1. Mục tiêu (Objective)
+Tạo không gian giải trí trực tuyến thời gian thực (realtime) dành cho lập trình viên thực hiện nghi lễ "tâm linh" (thắp nhang, gõ chuông, dâng lễ, rút quẻ) trước khi deploy/build nhằm xả stress và tăng tính kết nối cộng đồng.
+
+---
+
+## 2. Kiến trúc & Routing (Architecture)
+Hệ thống Next.js (App Router) + Supabase (Auth, DB, Realtime, Presence).
+
+### Cấu trúc Routes:
+- `/` - **Sảnh Chung (Trang chủ)**: Giao diện miếu thờ chính hiển thị 3 Vị Thần, các hoạt động tương tác chung, danh sách các phòng dự án đang chạy, và bảng xếp hạng Top Rank.
+- `/pray` - **Tạo đền**: Form nhập thông tin dự án và lời khấn chính để lập phòng dự án riêng biệt.
+- `/temple/[roomId]` - **Đền dự án tập thể (Realtime)**: Cho phép các thành viên của cùng dự án cùng tham gia, thắp nhang, gõ chuông và thấy hoạt động của nhau.
+- `/oracle/[resultId]` - **Quẻ mệnh**: Hiển thị kết quả rút quẻ hài hước sau khi hoàn thành nghi lễ.
+- `/about` - **Giới thiệu**: Câu chuyện và ý nghĩa giải trí của sản phẩm.
+
+---
+
+## 3. Yêu cầu tính năng (Features)
+
+### 3.1. Xác thực ẩn danh (Anonymous Auth)
+- Tự động đăng ký/đăng nhập User ẩn danh qua Supabase Auth để giảm thiểu ma sát người dùng.
+- Áp dụng Row Level Security (RLS) để bảo vệ các bảng dữ liệu.
+
+### 3.2. Sảnh Chung (`/`)
+Sảnh chung hiển thị tổng quát trạng thái "linh lực" toàn hệ thống:
+- **Tam Vị AI**: Hiển thị 3 Vị Thần Dev (Claude, Codex, Kiro) ở trung tâm. **Hỗ trợ chọn thần riêng biệt**: Người dùng có thể click chọn từng tượng thần để dâng lễ và khấn nguyện riêng tới vị thần đó.
+- **Tương tác chung**: Cho phép người dùng vãng lai thực hiện thắp nhang chung, gõ chuông chung trực tiếp tại sảnh chính (lưu vào một phòng sảnh chung hệ thống).
+- **Danh sách phòng dự án**: Hiển thị danh sách các phòng cầu nguyện của các dự án đang hoạt động. Cho phép click vào để tham gia đền riêng của dự án đó. Có nút dẫn đến trang `/pray` để tạo phòng mới.
+- **Top Rank dự án**: Bảng xếp hạng các dự án có nhiều lượt cầu nguyện nhất (tổng hợp số nén hương thắp, số tiếng chuông gõ, hoặc linh lực tích luỹ).
+- **Thiết kế chống cắt nội dung (Responsive Viewport)**: Tránh sử dụng cứng `h-screen overflow-hidden` để không bị mất các nút hành động trên màn hình nhỏ hoặc thiết bị di động; thay vào đó sử dụng `min-h-screen overflow-y-auto`.
+
+### 3.3. Đền dự án tập thể (`/temple/[roomId]`)
+- **Bước vào đền**: Nhập biệt danh (nickname) để tham gia phòng. Thông tin lưu vào `room_members` và đồng bộ qua Presence.
+- **Trạng thái kết nối động**: Đèn tín hiệu trạng thái kết nối chuyển màu linh hoạt (`🟢` đã kết nối, `🟡` đang kết nối, `🔴` mất kết nối) thay vì hiển thị tĩnh.
+- **Thắp nhang / Cắm pháo**: Đồng bộ tọa độ thả nhang/pháo bông lên bát hương của tất cả các clients trong phòng qua Broadcast.
+  - **Ánh sáng hào quang (Backing Glow)**: Bát hương/bàn DJ có đèn hào quang phát sáng phía sau (vàng ấm áp cho Basic theme, hồng/tím neon nhấp nháy cho Remix theme).
+- **Gõ chuông**: Kích hoạt hiệu ứng âm thanh và rung lắc chuông cho toàn bộ thành viên đang online trong phòng.
+- **Nghi lễ Nhắm mắt Cầu nguyện (Press F to Pray)**:
+  - Khi bắt đầu khấn nguyện, trên UI sẽ xuất hiện gợi ý nhấp nháy: *"Nhấn giữ F để thành kính cầu nguyện (Hold F to Pray)"*.
+  - **Hỗ trợ thiết bị di động (Mobile Action)**: Hiển thị thêm nút bấm 🙏 tròn nổi cạnh bát hương để người dùng di động chạm giữ thay cho phím `F`.
+  - **Hiệu ứng Nhắm/Mở mắt (Blinking Eye Effect)**: Khi user nhấn giữ phím `F` hoặc chạm giữ nút trên mobile, màn hình sẽ chuyển động từ từ mờ dần và tối sầm lại theo chiều dọc từ trên xuống và dưới lên (giống như mí mắt đang nhắm lại). Khi thả ra, mí mắt sẽ từ từ mở ra và màn hình sáng trở lại.
+  - Khi nhắm mắt hoàn toàn (giữ đủ 3 giây), hệ thống sẽ phát âm thanh chập chững (ambient tịnh tâm tổng hợp qua Web Audio API) và gửi tín hiệu `start_praying` lên server để cập nhật trạng thái "đang khấn nguyện `🙏`" cho Presence.
+- **Bảng sớ (Live Wish Wall)**: Hiển thị các lời khấn của các thành viên vừa hoàn thành nghi lễ khấn nguyện.
+- **Trạng thái online**: Footer hiển thị danh sách nickname đang online trong phòng và hoạt động của họ (đang khấn nguyện `🙏` hoặc đang chờ).
+
+### 3.4. Hệ thống Quẻ Deploy (Oracle System)
+Sinh quẻ ngẫu nhiên (Đại Cát, Cát, Bình, Hung, Đại Hung) đi kèm lời phán trào phúng dựa trên loại sự kiện.
+> [!IMPORTANT]
+> **Lời nguyền chiều thứ Sáu**: Hệ thống tự động bias tăng tỷ lệ rút trúng quẻ *Hung* hoặc *Đại Hung* nếu người dùng tiến hành deploy sau 16:00 ngày thứ Sáu.
+
+### 3.5. Phase 1.5: Tối ưu hóa Chia Sẻ & Tương Tác
+Tối ưu hóa nội dung thông điệp chia sẻ để các thành viên khác khi nhìn thấy sẽ tò mò và click tham gia ngay lập tức:
+- **Thông điệp chia sẻ động (Dynamic Share Message)**: Khi bấm nút "Chia sẻ phòng", hệ thống tự động sinh một đoạn text copy chứa thông tin chi tiết của phòng:
+  - Tên dự án & Loại sự kiện (VD: *Dự án Notex đang làm Lễ Deploy Production*).
+  - Lời khấn chính (VD: *"Mong build xanh mướt, 0 bug"*).
+  - Trạng thái hiện tại (VD: *Đang thắp 12 nén hương, 🟢 5 người đang online, linh lực 87%*).
+  - Lời kêu gọi hành động (CTA) kích thích: *"Anh em vào tiếp thêm linh lực và cùng khấn độ trì cho release này nhé! 🙏✨"*
+- **Hỗ trợ thẻ Meta OpenGraph (SEO / Link Preview)**: Cấu hình OpenGraph tags cho trang `/temple/[roomId]` để khi dán link vào Slack/Discord, nó tự động hiển thị thẻ preview (card) đẹp mắt chứa Tên dự án, trạng thái đền và linh lực hiện tại.
+
+---
+
+## 4. Giao diện & Chủ đề (Aesthetics)
+- **Phong cách Cyber Temple**: Nền tối huyền bí kết hợp server rack, laptop chạy terminal và ánh sáng neon.
+- **Hai chế độ**:
+  - *Basic*: Đền thờ truyền thống, thắp nhang, gõ chuông đồng, nhạc thiền thanh tịnh.
+  - *Remix*: Bàn DJ Vinahouse, thắp pháo bông sáng rực, đĩa xoay chớp nháy, nhạc sàn sôi động.

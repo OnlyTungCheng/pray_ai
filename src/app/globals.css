@@ -59,3 +59,76 @@ html, body, #root {
     box-shadow: 0 0 9px 5px rgba(251, 146, 60, 1), 0 0 16px 7px rgba(239, 68, 68, 0.8);
   }
 }
+
+/* Generated 2x2 incense sprite: dim when picked up, ignition + ember loop after dropping in the censer. */
+.joss-sprite-root::before,
+.joss-sprite-root::after {
+  content: none;
+}
+
+.joss-sprite {
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  width: 36px;
+  height: 180px;
+  transform: translateX(-50%);
+  transform-origin: bottom center;
+  background-image: url('/incense-burning-sprite-v2.png');
+  background-repeat: no-repeat;
+  background-position: 0 0;
+  background-size: 200% 200%;
+  filter: drop-shadow(0 8px 8px rgb(0 0 0 / 0.35));
+}
+
+.joss-sprite.is-unlit {
+  filter: brightness(0.58) saturate(0.55) drop-shadow(0 8px 8px rgb(0 0 0 / 0.35));
+}
+
+.joss-sprite.is-burning {
+  animation: incense-ember-frames 720ms steps(1, end) infinite, incense-ignite 620ms cubic-bezier(0.2, 0.8, 0.25, 1) both;
+}
+
+.joss-sprite-root.draggable .joss-sprite {
+  animation: incense-picked-up 280ms ease-out both;
+}
+
+.joss.burn .joss-sprite .joss-ember-tip {
+  left: 50%;
+  top: 1px;
+  bottom: auto;
+  width: 5px;
+  height: 5px;
+  transform: translateX(-50%);
+  z-index: 2;
+  animation: sprite-ember-glow 1.2s infinite alternate ease-in-out;
+}
+
+@keyframes incense-ember-frames {
+  0%, 24.99% { background-position: 0 0; }
+  25%, 49.99% { background-position: 100% 0; }
+  50%, 74.99% { background-position: 0 100%; }
+  75%, 100% { background-position: 100% 100%; }
+}
+
+@keyframes incense-ignite {
+  0% { filter: brightness(0.55) saturate(0.5) drop-shadow(0 0 0 transparent); transform: translateX(-50%) scale(0.86); }
+  45% { filter: brightness(1.5) saturate(1.35) drop-shadow(0 0 10px rgb(251 146 60 / 0.95)); transform: translateX(-50%) scale(1.08); }
+  100% { filter: drop-shadow(0 8px 8px rgb(0 0 0 / 0.35)); transform: translateX(-50%) scale(1); }
+}
+
+@keyframes incense-picked-up {
+  0% { opacity: 0; transform: translateX(-50%) translateY(18px) scale(0.82); }
+  100% { opacity: 1; transform: translateX(-50%) translateY(0) scale(1); }
+}
+
+@keyframes sprite-ember-glow {
+  0% {
+    transform: translateX(-50%) scale(0.9);
+    box-shadow: 0 0 5px 2px rgba(251, 146, 60, 0.8), 0 0 10px 4px rgba(220, 38, 38, 0.5);
+  }
+  100% {
+    transform: translateX(-50%) scale(1.15);
+    box-shadow: 0 0 9px 5px rgba(251, 146, 60, 1), 0 0 16px 7px rgba(239, 68, 68, 0.8);
+  }
+}

@@ -63,3 +63,42 @@ function synthWoodenFish(): void {
     console.warn('Audio playback error:', e);
   }
 }
+
+export function playBellSound(): void {
+  try {
+    if (!audioCtx) {
+      const AudioContextClass =
+        window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
+      audioCtx = new AudioContextClass();
+    }
+    if (audioCtx.state === 'suspended') {
+      audioCtx.resume();
+    }
+
+    const now = audioCtx.currentTime;
+
+    // Create a deep resonant bell sound by mixing multiple oscillators (fundamental + harmonics)
+    const frequencies = [180, 220, 330, 440];
+    const gains = [0.6, 0.4, 0.3, 0.2];
+
+    frequencies.forEach((freq, idx) => {
+      const osc = audioCtx!.createOscillator();
+      const gainNode = audioCtx!.createGain();
+
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(freq, now);
+
+      // Bell chime attack & slow decay envelope
+      gainNode.gain.setValueAtTime(gains[idx], now);
+      gainNode.gain.exponentialRampToValueAtTime(0.001, now + (idx === 0 ? 3.5 : 2.0));
+
+      osc.connect(gainNode);
+      gainNode.connect(audioCtx!.destination);
+
+      osc.start(now);
+      osc.stop(now + 3.6);
+    });
+  } catch (e) {
+    console.warn('Bell audio playback error:', e);
+  }
+}

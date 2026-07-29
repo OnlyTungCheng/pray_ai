@@ -1,0 +1,4 @@
+Use case: stylized-concept
+Asset type: one tall transparent server-rack scenery prop for a Cyber Temple website.
+
+Create one freestanding server rack in the same style, materials, lighting and subtle 3/4 camera as the Cyber Temple hall: dark charcoal metal and lacquered wood, antique bronze corner guards, East-Asian geometric trim, stacked server bays, enclosed cables, warm amber indicators, restrained indigo LEDs and a heavy low pedestal. It should feel like a sacred data-center artifact. Render the full vertical 2:3 object centered with generous padding on a perfectly flat #FF00FF chroma-key background. No people, deity statues, altar, lantern, readable text, logos, watermark, UI, floor plane or cast shadows.

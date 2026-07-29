@@ -2,8 +2,8 @@ import type { Metadata, Viewport } from 'next';
 import './globals.css';
 
 export const metadata: Metadata = {
-  title: '來上香 · Come Offer Incense',
-  description: '歡迎各位路人來這裡上香 · All passersby are invited to come and offer incense',
+  title: 'Đền Cầu Nguyện - Deploy Bình An, Production Vô Sự',
+  description: 'Nơi lập đền thắp nhang, gõ chuông cầu nguyện trước giờ deploy, build, database migration cho anh em developer.',
   icons: {
     icon: '/favicon.svg'
   }

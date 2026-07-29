@@ -3,9 +3,10 @@ import { useState, useEffect, useRef } from 'react';
 interface BgmPlayerProps {
   themeMode?: string;
   onToggleTheme?: () => void;
+  isInline?: boolean;
 }
 
-export default function BgmPlayer({ themeMode, onToggleTheme }: BgmPlayerProps) {
+export default function BgmPlayer({ themeMode, onToggleTheme, isInline = false }: BgmPlayerProps) {
   const [isPlaying, setIsPlaying] = useState(false);
   const [volume, setVolume] = useState(0.5);
   const [hasInteracted, setHasInteracted] = useState(false);
@@ -74,7 +75,7 @@ export default function BgmPlayer({ themeMode, onToggleTheme }: BgmPlayerProps) 
   };
 
   return (
-    <div className="fixed bottom-4 right-4 z-50 flex items-center gap-2 p-2 rounded-full bg-stone-900/90 border border-amber-500/40 backdrop-blur-md shadow-2xl transition-all hover:border-amber-400">
+    <div className={isInline ? "flex items-center gap-2" : "fixed bottom-4 right-4 z-50 flex items-center gap-2 p-2 rounded-full bg-stone-900/90 border border-amber-500/40 backdrop-blur-md shadow-2xl transition-all hover:border-amber-400"}>
       <audio ref={audioRef} src={audioSrc} loop preload="auto" />
 
       {/* Theme Switcher Button */}

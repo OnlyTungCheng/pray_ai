@@ -1,0 +1,4 @@
+Use case: stylized-concept
+Asset type: a large interactive DJ-altar foreground object for the Remix theme of a developer prayer shrine.
+
+Use the Basic altar-and-censer asset as the strict composition and scale reference. Preserve its wide centered silhouette, frontal camera, subtle 3/4 top surface, generous padding, and bottom anchor. Transform it into an ornate cyber-Vinahouse DJ console: low lacquer-black and dark-purple table, chrome and carved East-Asian geometric trim, a glowing central turntable platter serving as a sparkler receptacle, three empty receptacle holes, compact mixer controls, symmetrical speaker detail and restrained equalizer lights. Use polished stylized 3D, clean HD game-prop quality. Render on a perfectly flat #FF00FF chroma-key background with no floor plane, shadows, reflections or texture. No people, deities, sparklers, fireworks, smoke, headphones, text, logos, watermark or UI.

@@ -39,6 +39,8 @@ export const DEITIES: PartyDeity[] = [
 
 interface TechDeitiesProps {
   themeMode?: string;
+  activeDeityId?: string;
+  onSelectDeity?: (id: string) => void;
 }
 
 // Subwoofer Speaker Tower Component for Remix Mode
@@ -70,7 +72,7 @@ function SpeakerTower() {
   );
 }
 
-export default function TechDeities({ themeMode }: TechDeitiesProps) {
+export default function TechDeities({ themeMode, activeDeityId, onSelectDeity }: TechDeitiesProps) {
   const isRemix = themeMode === 'remix';
 
   return (
@@ -95,7 +97,7 @@ export default function TechDeities({ themeMode }: TechDeitiesProps) {
 
             {/* Center Shrine Plaque Banner */}
             <div className="relative px-6 md:px-10 py-2.5 rounded-2xl border-4 shadow-2xl transition-all duration-500 bg-gradient-to-r from-red-700 via-amber-500 to-red-700 border-amber-200 text-stone-950 shadow-[0_0_35px_rgba(245,158,11,0.9)]">
-              <span className="font-serif font-black text-sm md:text-lg text-white tracking-[0.25em] uppercase text-shadow-lg">
+              <span className="font-serif font-black text-sm md:text-lg text-white tracking-wider uppercase text-shadow-lg">
                 ⛩️ MIẾU THỜ TAM VỊ AI ⛩️
               </span>
             </div>
@@ -141,13 +143,19 @@ export default function TechDeities({ themeMode }: TechDeitiesProps) {
               ? deity.name.replace('Thần', 'Dân Chơi')
               : deity.name;
             const imgSrc = isRemix ? deity.partyImg : deity.statueImg;
+            const isSelected = activeDeityId === deity.id;
 
             return (
               <div
                 key={deity.id}
-                className={`relative flex flex-col items-center rounded-2xl overflow-hidden border-4 ${
-                  isRemix ? 'border-pink-400 shadow-[0_0_35px_rgba(236,72,153,0.9)]' : deity.borderColor
-                } shadow-[0_15px_45px_rgba(0,0,0,0.95)] bg-stone-900 scale-100 flex-1 max-w-[30%]`}
+                onClick={() => onSelectDeity?.(deity.id)}
+                className={`relative flex flex-col items-center rounded-2xl overflow-hidden border-4 cursor-pointer transition-all duration-300 ${
+                  isSelected
+                    ? isRemix
+                      ? 'border-pink-300 ring-4 ring-pink-500 shadow-[0_0_40px_rgba(236,72,153,1)] scale-105 z-10'
+                      : 'border-amber-300 ring-4 ring-amber-500 shadow-[0_0_35px_rgba(245,158,11,1)] scale-105 z-10'
+                    : 'border-transparent opacity-60 hover:opacity-90 hover:scale-[1.02]'
+                } shadow-[0_15px_45px_rgba(0,0,0,0.95)] bg-stone-900 flex-1 max-w-[30%]`}
               >
                 {/* Prominent Bright Name Header */}
                 <div
@@ -166,10 +174,10 @@ export default function TechDeities({ themeMode }: TechDeitiesProps) {
                     src={imgSrc}
                     alt={displayName}
                     className={`h-[24vh] md:h-[29vh] w-full object-cover brightness-110 contrast-105 ${
-                      isRemix ? 'animate-bounce' : ''
+                      isRemix && isSelected ? 'animate-bounce' : ''
                     }`}
                     style={{
-                      filter: isRemix
+                      filter: isRemix && isSelected
                         ? 'drop-shadow(0 0 30px rgba(236,72,153,1))'
                         : `drop-shadow(0 0 25px ${deity.glowColor})`
                     }}

@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 
 import { createClient } from "@/lib/supabase/server";
+import { enforceRateLimit } from "@/lib/rate-limit";
+import { joinRoomForUser, requireUser, RoomServiceError } from "@/features/temple-room/room-service";
 
 const joinRoomSchema = z.object({
   displayName: z
@@ -41,104 +43,41 @@ export async function POST(
 
   const supabase = await createClient();
 
-  const {
-    data: { user },
-    error: userError,
-  } = await supabase.auth.getUser();
+  try {
+    const user = await requireUser(supabase);
 
-  if (userError || !user) {
-    return NextResponse.json(
-      {
-        error: "UNAUTHORIZED",
-      },
-      {
-        status: 401,
-      },
+    const rateLimited = await enforceRateLimit(supabase, user.id, "rooms:join");
+    if (rateLimited) return rateLimited;
+
+    const { room } = await joinRoomForUser(
+      supabase,
+      roomId,
+      parsedBody.data.displayName,
     );
+
+    return NextResponse.json({
+      user: {
+        id: user.id,
+        displayName: parsedBody.data.displayName,
+      },
+      room,
+    });
+  } catch (cause) {
+    if (cause instanceof RoomServiceError) {
+      const statusByCode: Record<RoomServiceError["code"], number> = {
+        UNAUTHORIZED: 401,
+        ROOM_NOT_FOUND: 404,
+        ROOM_QUERY_FAILED: 500,
+        JOIN_FAILED: 500,
+        CREATE_FAILED: 500,
+      };
+
+      return NextResponse.json(
+        { error: cause.code },
+        { status: statusByCode[cause.code] },
+      );
+    }
+
+    throw cause;
   }
-
-  const { data: room, error: roomError } =
-    await supabase
-      .from("rooms")
-      .select(
-        `
-          id,
-          slug,
-          title,
-          description,
-          status,
-          incense_count,
-          bell_count,
-          prayer_count,
-          energy,
-          revision
-        `,
-      )
-      .eq("id", roomId)
-      .maybeSingle();
-
-  if (roomError) {
-    return NextResponse.json(
-      {
-        error: "ROOM_QUERY_FAILED",
-      },
-      {
-        status: 500,
-      },
-    );
-  }
-
-  if (!room) {
-    return NextResponse.json(
-      {
-        error: "ROOM_NOT_FOUND",
-      },
-      {
-        status: 404,
-      },
-    );
-  }
-
-  const { error: joinError } = await supabase
-    .from("room_members")
-    .upsert(
-      {
-        room_id: roomId,
-        user_id: user.id,
-        display_name: parsedBody.data.displayName,
-      },
-      {
-        onConflict: "room_id,user_id",
-      },
-    );
-
-  if (joinError) {
-    return NextResponse.json(
-      {
-        error: "JOIN_FAILED",
-      },
-      {
-        status: 500,
-      },
-    );
-  }
-
-  return NextResponse.json({
-    user: {
-      id: user.id,
-      displayName: parsedBody.data.displayName,
-    },
-    room: {
-      id: room.id,
-      slug: room.slug,
-      title: room.title,
-      description: room.description,
-      status: room.status,
-      incenseCount: room.incense_count,
-      bellCount: room.bell_count,
-      prayerCount: room.prayer_count,
-      energy: room.energy,
-      revision: room.revision,
-    },
-  });
 }

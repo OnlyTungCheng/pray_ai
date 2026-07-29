@@ -13,6 +13,9 @@ import { createClient } from "@/lib/supabase/client";
 export type RoomSnapshot = {
   id: string;
   title: string;
+  projectName: string;
+  eventType: 'build' | 'deploy' | 'migration' | 'release';
+  prayer: string;
   status: "waiting" | "praying" | "completed";
   incenseCount: number;
   bellCount: number;

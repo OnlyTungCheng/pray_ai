@@ -1,0 +1,4 @@
+Use case: stylized-concept
+Asset type: a single large interactive altar-and-censer foreground object for a developer prayer shrine website.
+
+Use the Cyber Temple hall background as the style and lighting reference. Create an elegant symmetrical East-Asian altar table with a subtle 3/4 top surface, dark red lacquered carved wood and understated circuit-like inlay. Center one large ornate antique bronze incense burner with three visible empty incense holes and a softly glowing amber rim. Use polished stylized 3D, clean HD game-prop quality. Include no people, deity statues, incense sticks, smoke, bell, candles, offerings, DJ equipment, text, logos, watermark or UI. Render it fully contained with generous padding on a perfectly flat #FF00FF chroma-key background, without a floor plane, shadows, reflections or texture.
