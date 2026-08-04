@@ -76,10 +76,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
   return (
     <html lang="vi">
       <head>
-        <link rel="preload" as="image" href="/wavy.svg" />
-        <link rel="preload" as="image" href="/talisman.svg" />
         <link rel="stylesheet" href="/css1.css" />
-        <link rel="stylesheet" href="/css2.css" />
       </head>
       <body className={`${spectral.variable} ${beVietnamPro.variable} ${jetbrainsMono.variable} font-ui bg-[#111] text-stone-200 text-base selection:bg-amber-800 selection:text-white`}>
         {children}

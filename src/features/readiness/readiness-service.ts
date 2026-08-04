@@ -3,7 +3,7 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import { drawOracle } from "@/features/oracle/draw-oracle";
 import type { OracleResult } from "@/features/oracle/types";
 import { buildReadinessSnapshot } from "./score-readiness";
-import { assertReleaseSteward, assertRoomMember, RoomAuthorityError } from "@/features/room-authority/room-authority";
+import { assertRoomMember } from "@/features/room-authority/room-authority";
 import type {
   LaunchRitualRun,
   ProjectReadinessCheck,
@@ -17,7 +17,6 @@ export class ReadinessServiceError extends Error {
     message: string,
     public readonly code:
       | "NOT_A_ROOM_MEMBER"
-      | "NOT_RELEASE_STEWARD"
       | "READINESS_FETCH_FAILED"
       | "READINESS_UPDATE_FAILED"
       | "RITUAL_CONTEXT_FAILED"
@@ -68,8 +67,8 @@ function mapOracle(row: Record<string, unknown>): OracleResult {
 export async function assertReadinessMember(supabase: SupabaseClient, roomId: string, userId: string) {
   try {
     return await assertRoomMember(supabase, roomId, userId);
-  } catch (error) {
-    throw new ReadinessServiceError("User is not a room member", error instanceof RoomAuthorityError ? error.code : "NOT_A_ROOM_MEMBER");
+  } catch {
+    throw new ReadinessServiceError("User is not a room member", "NOT_A_ROOM_MEMBER");
   }
 }
 
@@ -92,8 +91,7 @@ export async function updateProjectReadiness(
   supabase: SupabaseClient,
   input: { roomId: string; userId: string; checkKey: ReadinessCheckKey; status: ReadinessStatus; note: string | null },
 ) {
-  try { await assertReleaseSteward(supabase, input.roomId, input.userId); }
-  catch (error) { throw new ReadinessServiceError("User cannot update readiness", error instanceof RoomAuthorityError ? error.code : "NOT_RELEASE_STEWARD"); }
+  await assertReadinessMember(supabase, input.roomId, input.userId);
   const { error } = await supabase.from("project_readiness_checks").upsert({
     room_id: input.roomId,
     check_key: input.checkKey,
@@ -110,8 +108,7 @@ export async function launchProjectRitual(
   supabase: SupabaseClient,
   input: { roomId: string; userId: string; ritualId: string; riskAccepted: boolean; note: string | null },
 ) {
-  try { await assertReleaseSteward(supabase, input.roomId, input.userId); }
-  catch (error) { throw new ReadinessServiceError("User cannot launch ritual", error instanceof RoomAuthorityError ? error.code : "NOT_RELEASE_STEWARD"); }
+  await assertReadinessMember(supabase, input.roomId, input.userId);
   const [roomResult, snapshot] = await Promise.all([
     supabase.from("rooms").select("event_type").eq("id", input.roomId).maybeSingle(),
     getProjectReadiness(supabase, input.roomId),
@@ -133,7 +130,6 @@ export async function launchProjectRitual(
     p_event_type: result.eventType,
     p_message: result.message,
   });
-  if (error?.message.includes("NOT_RELEASE_STEWARD")) throw new ReadinessServiceError("User cannot launch ritual", "NOT_RELEASE_STEWARD");
   if (error || !data) throw new ReadinessServiceError("Ritual persistence failed", "RITUAL_PERSIST_FAILED");
   const payload = data as { run: Record<string, unknown>; result: Record<string, unknown> };
   return { readiness: snapshot, run: payload.run, result: mapOracle(payload.result) };

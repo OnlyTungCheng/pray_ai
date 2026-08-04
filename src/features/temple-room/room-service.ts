@@ -1,7 +1,6 @@
 import type { SupabaseClient, User } from '@supabase/supabase-js';
 
 import { createRoom, type CreateRoomInput, type CreatedRoom } from '@/features/temple-room/create-room';
-import { getDefaultHall } from '@/features/halls/hall-catalog-service';
 import {
   ROOM_SUMMARY_COLUMNS,
   toRoomSnapshot,
@@ -96,13 +95,9 @@ export async function getRoomById(supabase: SupabaseClient, roomId: string): Pro
  * Creates a new temple room on behalf of an authenticated user.
  * Matches the doc's /pray flow: nhập project/event/prayer -> tạo phòng.
  *
- * Per docs/than.md §4 (revised flow): picking a Hall (Điện) is NOT required
- * to create a room. If `hallId` is omitted entirely (`undefined` — distinct
- * from an explicit `null`, which callers can still pass to deliberately
- * create a hall-less room, e.g. matching the pre-feature system lobby),
- * this auto-assigns the default Hall (lowest sort_order) and its primary
- * deity, so every room always renders with *some* Hall context. Users can
- * switch Halls afterwards via PATCH /api/rooms/[roomId]/hall.
+ * Project creation is independent from temple presentation. A Hall/deity is
+ * optional decoration that participants may select later in the room; no
+ * default Hall is derived from project data.
  */
 export async function createRoomForUser(
   supabase: SupabaseClient,
@@ -111,28 +106,12 @@ export async function createRoomForUser(
   const user = await requireUser(supabase);
 
   try {
-    let resolvedInput = input;
-
-    if (input.hallId === undefined) {
-      const defaultHall = await getDefaultHall(supabase);
-      if (defaultHall) {
-        resolvedInput = {
-          ...input,
-          hallId: defaultHall.id,
-          primaryDeityId: input.primaryDeityId ?? defaultHall.deities[0]?.slug ?? null
-        };
-      }
-      // If no halls exist at all (e.g. seed hasn't run), fall through and
-      // create a hall-less room rather than failing room creation entirely
-      // — the Hall system is additive, not a hard dependency for /pray to work.
-    }
-
-    const room = await createRoom(supabase, resolvedInput);
-    const { error: ownerError } = await supabase.from('room_members').upsert(
-      { room_id: room.id, user_id: user.id, display_name: user.email?.split('@')[0] ?? 'Room owner', role: 'owner' },
+    const room = await createRoom(supabase, input);
+    const { error: memberError } = await supabase.from('room_members').upsert(
+      { room_id: room.id, user_id: user.id, display_name: user.email?.split('@')[0] ?? 'Room member' },
       { onConflict: 'room_id,user_id' },
     );
-    if (ownerError) throw ownerError;
+    if (memberError) throw memberError;
     return { user, room };
   } catch (cause) {
     throw new RoomServiceError(

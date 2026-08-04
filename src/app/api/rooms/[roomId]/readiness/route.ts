@@ -16,7 +16,7 @@ const updateSchema = z.object({
 
 function errorResponse(error: unknown) {
   if (error instanceof ReadinessServiceError) {
-    const status = error.code === "NOT_A_ROOM_MEMBER" || error.code === "NOT_RELEASE_STEWARD" ? 403 : 500;
+    const status = error.code === "NOT_A_ROOM_MEMBER" ? 403 : 500;
     return NextResponse.json({ error: error.code }, { status });
   }
   return NextResponse.json({ error: "READINESS_FAILED" }, { status: 500 });

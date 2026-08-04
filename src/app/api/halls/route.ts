@@ -16,5 +16,14 @@ export async function GET() {
   const supabase = await createClient();
   const halls = await listHalls(supabase);
 
-  return NextResponse.json({ halls });
+  return NextResponse.json(
+    { halls },
+    {
+      headers: {
+        // Hall catalog is public and changes rarely. Room/realtime endpoints
+        // deliberately remain uncached.
+        'Cache-Control': 'public, max-age=300, s-maxage=3600, stale-while-revalidate=86400',
+      },
+    },
+  );
 }

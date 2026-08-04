@@ -13,7 +13,10 @@ export default function ProjectReadinessPanel({ roomId, themeMode, onLaunch, onS
   const [error, setError] = useState<string | null>(null);
   const load = useCallback(async () => {
     const response = await fetch(`/api/rooms/${roomId}/readiness`, { cache: "no-store" });
-    if (!response.ok) throw new Error("Không thể tải readiness.");
+    if (!response.ok) {
+      const payload = await response.json().catch(() => ({})) as { error?: string };
+      throw new Error(payload.error === "NOT_A_ROOM_MEMBER" ? "Hãy vào đền trước khi cùng kiểm tra readiness." : "Không thể tải readiness.");
+    }
     const nextSnapshot = await response.json() as ProjectReadinessSnapshot;
     setSnapshot(nextSnapshot); onSnapshot?.(nextSnapshot);
   }, [onSnapshot, roomId]);
@@ -42,7 +45,7 @@ export default function ProjectReadinessPanel({ roomId, themeMode, onLaunch, onS
         </article>)}
       </div>
       {error && <p className="readiness-error">{error}</p>}
-      <button type="button" className="launch-ritual-button" disabled={!snapshot} onClick={() => snapshot && onLaunch(snapshot)}>Khởi lễ thành công →</button>
+      <button type="button" className="launch-ritual-button" disabled={!snapshot} onClick={() => snapshot && onLaunch(snapshot)}>Cùng khai lễ thành công →</button>
       {snapshot?.recentRuns.length ? <ol className="readiness-timeline">{snapshot.recentRuns.slice(0, 3).map((run) => <li key={run.id}>Lễ {run.readinessScore}% {run.riskAccepted ? "· đã chấp nhận rủi ro" : "· an toàn"}</li>)}</ol> : <p className="readiness-empty">Chưa có lần khai lễ nào.</p>}
     </section>}
   </div>;

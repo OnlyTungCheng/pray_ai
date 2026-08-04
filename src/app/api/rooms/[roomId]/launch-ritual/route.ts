@@ -14,7 +14,7 @@ type RouteContext = { params: Promise<{ roomId: string }> };
 
 function errorResponse(error: unknown) {
   if (error instanceof ReadinessServiceError) {
-    const status = error.code === "NOT_A_ROOM_MEMBER" || error.code === "NOT_RELEASE_STEWARD" ? 403 : error.code === "READINESS_BLOCKED" ? 409 : 500;
+    const status = error.code === "NOT_A_ROOM_MEMBER" ? 403 : error.code === "READINESS_BLOCKED" ? 409 : 500;
     return NextResponse.json({ error: error.code }, { status });
   }
   return NextResponse.json({ error: "RITUAL_FAILED" }, { status: 500 });
