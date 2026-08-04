@@ -1,0 +1,5 @@
+Use case: stylized-concept
+Asset type: transparent decorative stage emblem for an interactive Vinahouse prayer DJ altar.
+Primary request: one ornate circular neon talisman built from a vinyl record, chrome East-Asian geometric ring, cyan and fuchsia equalizer marks, and a small gold central light. Polished stylized 3D game prop.
+Composition: one centered circular object with generous padding; no text, logo, person, speaker or turntable table.
+Background: perfectly flat solid #00ff00 chroma-key background for removal. No shadows, floor, gradients, smoke, reflections, watermark, or UI. Do not use green in the object.

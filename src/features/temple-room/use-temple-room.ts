@@ -9,26 +9,12 @@ import {
 import type { RealtimeChannel } from "@supabase/supabase-js";
 
 import { createClient } from "@/lib/supabase/client";
+import { showApiErrorToast } from "@/lib/api-error-toast";
+import type { RoomSnapshot as CanonicalRoomSnapshot } from "./room-projection";
 
-export type RoomSnapshot = {
-  id: string;
-  title: string;
-  projectName: string;
-  eventType: 'build' | 'deploy' | 'migration' | 'release';
-  prayer: string;
-  status: "waiting" | "praying" | "completed";
-  incenseCount: number;
-  bellCount: number;
-  prayerCount: number;
-  offeringCount?: number;
-  energy: number;
-  revision: number;
-  hallId?: string | null;
-  primaryDeityId?: string | null;
-  supportDeityIds?: string[];
-};
+export type RoomSnapshot = CanonicalRoomSnapshot;
 
-type Participant = {
+export type Participant = {
   userId: string;
   displayName: string;
   activity: "idle" | "praying";
@@ -54,6 +40,16 @@ type RoomActionPayload = {
   actionPayload: Record<string, unknown>;
   createdAt: string;
   room: RoomSnapshot;
+};
+
+export type RoomActionType = RoomActionPayload["actionType"];
+
+export type RoomActionResponse = {
+  accepted: boolean;
+  duplicated?: boolean;
+  eventId: string;
+  result?: { id: string };
+  room?: RoomSnapshot | null;
 };
 
 type UseTempleRoomParams = {
@@ -246,9 +242,9 @@ export function useTempleRoom({
     user.id,
   ]);
 
-  async function updateActivity(
+  const updateActivity = useCallback(async (
     activity: Participant["activity"],
-  ) {
+  ) => {
     const channel = channelRef.current;
 
     ownPresenceRef.current = { ...ownPresenceRef.current, activity };
@@ -265,7 +261,7 @@ export function useTempleRoom({
       avatarId: ownPresenceRef.current.avatarId,
       joinedAt: new Date().toISOString(),
     });
-  }
+  }, [user.displayName, user.id]);
 
   /**
    * Updates this client's own seatSlot/avatarId in Presence — called after
@@ -275,10 +271,10 @@ export function useTempleRoom({
    * server has already decided, exactly like updateActivity does for
    * start_praying/finish_praying today.
    */
-  async function updateSeat(
+  const updateSeat = useCallback(async (
     seatSlot: number | null,
     avatarId: string | null,
-  ) {
+  ) => {
     const channel = channelRef.current;
 
     ownPresenceRef.current = { ...ownPresenceRef.current, seatSlot, avatarId };
@@ -295,7 +291,47 @@ export function useTempleRoom({
       avatarId,
       joinedAt: new Date().toISOString(),
     });
-  }
+  }, [user.displayName, user.id]);
+
+  const sendAction = useCallback(async (
+    type: RoomActionType,
+    payload: Record<string, unknown> = {},
+    eventId = crypto.randomUUID(),
+  ): Promise<RoomActionResponse> => {
+    const response = await fetch(`/api/rooms/${initialRoom.id}/actions`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ eventId, type, payload }),
+    });
+
+    if (!response.ok) {
+      const errorPayload = await showApiErrorToast(response, "Không thể thực hiện hành động.");
+      throw new Error(errorPayload.error || `Action rejected with status ${response.status}`);
+    }
+
+    const payloadResponse = await response.json().catch(() => ({}));
+    return { ...payloadResponse, eventId } as RoomActionResponse;
+  }, [initialRoom.id]);
+
+  const claimSeat = useCallback(async (seatSlot: number, avatarId?: string) => {
+    const response = await fetch(`/api/rooms/${initialRoom.id}/seat`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ seatSlot, avatarId }),
+    });
+    if (!response.ok) {
+      const payload = await response.json().catch(() => ({})) as { error?: string };
+      if (response.status === 409) throw new Error("Ghế này vừa được người khác chọn. Hãy chọn ghế khác.");
+      throw new Error(payload.error === "NOT_A_ROOM_MEMBER" ? "Bạn cần vào phòng trước khi chọn ghế." : "Không thể cập nhật chỗ ngồi.");
+    }
+    await updateSeat(seatSlot, avatarId ?? null);
+  }, [initialRoom.id, updateSeat]);
+
+  const releaseSeat = useCallback(async () => {
+    const response = await fetch(`/api/rooms/${initialRoom.id}/seat`, { method: "DELETE" });
+    if (!response.ok) throw new Error("Không thể rời ghế hiện tại.");
+    await updateSeat(null, null);
+  }, [initialRoom.id, updateSeat]);
 
   return {
     room,
@@ -304,5 +340,8 @@ export function useTempleRoom({
     connectionStatus,
     updateActivity,
     updateSeat,
+    sendAction,
+    claimSeat,
+    releaseSeat,
   };
 }

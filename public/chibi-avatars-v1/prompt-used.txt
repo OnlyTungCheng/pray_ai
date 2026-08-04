@@ -1,0 +1,5 @@
+Use case: stylized-concept
+Asset type: a 3 by 2 packed sprite sheet of six distinct chibi developer avatars for a collaborative coding temple app.
+Primary request: exactly six full-body friendly chibi developer characters, each centered in an equal 3-column by 2-row cell, standing front-facing with hands relaxed. Diverse hair, skin tones, glasses and casual developer clothing in cyan, violet, coral, yellow, green and blue accents. Consistent polished 3D game mascot style, same scale and feet baseline in every cell.
+Composition: clear generous padding around every character, no overlap between cells, no crop at any edge. No text, name labels, logo, deity, celebrity, or existing project mascot.
+Background: perfectly flat #00ff00 chroma-key background; no floor, shadow, gradient, texture, reflections, smoke, watermark, or UI. Do not use green in characters.

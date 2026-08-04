@@ -2,6 +2,12 @@ import type { SupabaseClient, User } from '@supabase/supabase-js';
 
 import { createRoom, type CreateRoomInput, type CreatedRoom } from '@/features/temple-room/create-room';
 import { getDefaultHall } from '@/features/halls/hall-catalog-service';
+import {
+  ROOM_SUMMARY_COLUMNS,
+  toRoomSnapshot,
+  type RoomProjectionRow,
+  type RoomSnapshot,
+} from '@/features/temple-room/room-projection';
 
 export class RoomServiceError extends Error {
   constructor(
@@ -29,86 +35,17 @@ export async function requireUser(supabase: SupabaseClient): Promise<User> {
   return data.user;
 }
 
-export interface RoomSummary {
-  id: string;
+export interface RoomSummary extends RoomSnapshot {
   slug: string;
-  title: string;
-  projectName: string;
-  eventType: 'build' | 'deploy' | 'migration' | 'release';
-  prayer: string;
-  description: string | null;
-  status: 'waiting' | 'praying' | 'completed';
-  incenseCount: number;
-  bellCount: number;
-  prayerCount: number;
-  offeringCount: number;
-  energy: number;
-  revision: number;
-  hallId: string | null;
-  primaryDeityId: string | null;
-  supportDeityIds: string[];
 }
 
 /** Fixed slug for the shared system lobby room seeded by migration 0004. */
 export const SYSTEM_LOBBY_SLUG = 'sanh-chung';
 
-const ROOM_SUMMARY_COLUMNS = `
-  id,
-  slug,
-  title,
-  project_name,
-  event_type,
-  prayer,
-  description,
-  status,
-  incense_count,
-  bell_count,
-  prayer_count,
-  offering_count,
-  energy,
-  revision,
-  hall_id,
-  primary_deity_id,
-  support_deity_ids
-`;
-
-function mapRoomRow(row: {
-  id: string;
-  slug: string;
-  title: string;
-  project_name: string;
-  event_type: 'build' | 'deploy' | 'migration' | 'release';
-  prayer: string;
-  description: string | null;
-  status: 'waiting' | 'praying' | 'completed';
-  incense_count: number;
-  bell_count: number;
-  prayer_count: number;
-  offering_count?: number;
-  energy: number;
-  revision: number;
-  hall_id?: string | null;
-  primary_deity_id?: string | null;
-  support_deity_ids?: string[] | null;
-}): RoomSummary {
+export function toRoomSummary(row: RoomProjectionRow & { slug: string }): RoomSummary {
   return {
-    id: row.id,
+    ...toRoomSnapshot(row),
     slug: row.slug,
-    title: row.title,
-    projectName: row.project_name,
-    eventType: row.event_type,
-    prayer: row.prayer,
-    description: row.description,
-    status: row.status,
-    incenseCount: row.incense_count,
-    bellCount: row.bell_count,
-    prayerCount: row.prayer_count,
-    offeringCount: row.offering_count ?? 0,
-    energy: row.energy,
-    revision: row.revision,
-    hallId: row.hall_id ?? null,
-    primaryDeityId: row.primary_deity_id ?? null,
-    supportDeityIds: row.support_deity_ids ?? []
   };
 }
 
@@ -128,7 +65,7 @@ export async function getSystemLobbyRoom(supabase: SupabaseClient): Promise<Room
     return null;
   }
 
-  return mapRoomRow(data);
+  return toRoomSummary(data as RoomProjectionRow & { slug: string });
 }
 
 /**
@@ -152,7 +89,7 @@ export async function getRoomById(supabase: SupabaseClient, roomId: string): Pro
     return null;
   }
 
-  return mapRoomRow(data);
+  return toRoomSummary(data as RoomProjectionRow & { slug: string });
 }
 
 /**
@@ -191,6 +128,11 @@ export async function createRoomForUser(
     }
 
     const room = await createRoom(supabase, resolvedInput);
+    const { error: ownerError } = await supabase.from('room_members').upsert(
+      { room_id: room.id, user_id: user.id, display_name: user.email?.split('@')[0] ?? 'Room owner', role: 'owner' },
+      { onConflict: 'room_id,user_id' },
+    );
+    if (ownerError) throw ownerError;
     return { user, room };
   } catch (cause) {
     throw new RoomServiceError(
@@ -243,7 +185,7 @@ export async function joinRoomForUser(
 
   return {
     user,
-    room: mapRoomRow(room)
+    room: toRoomSummary(room as RoomProjectionRow & { slug: string })
   };
 }
 

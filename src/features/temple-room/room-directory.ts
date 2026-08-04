@@ -1,21 +1,10 @@
 import type { SupabaseClient } from '@supabase/supabase-js';
+import { toRoomSnapshot, type RoomSnapshot } from './room-projection';
 
-export interface ActiveProjectRoom {
-  id: string;
+export interface ActiveProjectRoom extends RoomSnapshot {
   slug: string;
-  projectName: string;
-  eventType: 'build' | 'deploy' | 'migration' | 'release';
-  title: string;
-  status: 'waiting' | 'praying' | 'completed';
-  incenseCount: number;
-  bellCount: number;
-  prayerCount: number;
-  offeringCount: number;
-  energy: number;
   createdAt: string;
   expiresAt: string;
-  hallId: string | null;
-  primaryDeityId: string | null;
 }
 
 export interface ProjectRankEntry {
@@ -48,21 +37,10 @@ export async function listActiveProjectRooms(
   }
 
   return data.map((row) => ({
-    id: row.id,
+    ...toRoomSnapshot(row),
     slug: row.slug,
-    projectName: row.project_name,
-    eventType: row.event_type,
-    title: row.title,
-    status: row.status,
-    incenseCount: row.incense_count,
-    bellCount: row.bell_count,
-    prayerCount: row.prayer_count,
-    offeringCount: row.offering_count,
-    energy: row.energy,
     createdAt: row.created_at,
     expiresAt: row.expires_at,
-    hallId: row.hall_id ?? null,
-    primaryDeityId: row.primary_deity_id ?? null
   }));
 }
 

@@ -1,0 +1,9 @@
+{
+  "version": 1,
+  "canvas": { "width": 1536, "height": 864 },
+  "backdrop": "remix-scene-v1-backdrop.png",
+  "foreground": "remix-scene-v1-foreground.png",
+  "foregroundAlpha": true,
+  "composition": "Empty center and lower stage reserved for HTML DJ altar, mascot cards, and ritual interactions.",
+  "motion": "CSS atmosphere and shared requestAnimationFrame parallax; decorative motion is disabled by prefers-reduced-motion."
+}

@@ -8,8 +8,16 @@ import {
   type RoomSnapshot,
 } from "../features/temple-room/use-temple-room";
 import dynamic from "next/dynamic";
-import TechDeities, { DEITIES } from "../features/shrine/TechDeities";
+import { DEITIES } from "../features/shrine/TechDeities";
 import SceneDeities from "../features/shrine/SceneDeities";
+import RemixDeities from "../features/shrine/RemixDeities";
+import RemixEnergyTalisman from "../features/effects/RemixEnergyTalisman";
+import AvatarSeatPicker from "../features/avatars/AvatarSeatPicker";
+import SeatAvatars from "../features/avatars/SeatAvatars";
+import ProjectReadinessPanel from "../features/readiness/ProjectReadinessPanel";
+import LaunchRitualModal from "../features/readiness/LaunchRitualModal";
+import ProjectSpirits from "../features/readiness/ProjectSpirits";
+import type { ProjectReadinessSnapshot } from "../features/readiness/types";
 import CenserSection from "../features/censer/CenserSection";
 import BottomActionBar from "../components/BottomActionBar";
 import PressFToPrayButton from "../components/PressFToPrayButton";
@@ -32,6 +40,7 @@ const TempleScene = dynamic(() => import("../features/temple-scene/TempleScene")
 import type { IncenseStick, Wish } from "../types";
 import { createClient } from "../lib/supabase/client";
 import type { Deity } from "../features/halls/deity-catalog";
+import { useAltarExperience } from "../features/altar-experience/use-altar-experience";
 
 type HallCatalog = {
   id: string;
@@ -55,18 +64,16 @@ export default function LiveAltarPage({
   const router = useRouter();
   const [currentDeityId, setCurrentDeityId] = useState("claude");
   const [halls, setHalls] = useState<HallCatalog[]>([]);
-  const [currentHallId, setCurrentHallId] = useState(initialRoom.hallId ?? "");
-  const [currentHallDeityId, setCurrentHallDeityId] = useState(initialRoom.primaryDeityId ?? "");
   const [isHallSwitching, setIsHallSwitching] = useState(false);
   const [isPrayerModalOpen, setIsPrayerModalOpen] = useState(false);
   const [isWishWallOpen, setIsWishWallOpen] = useState(false);
   const [isOfferingModalOpen, setIsOfferingModalOpen] = useState(false);
+  const [isAvatarPickerOpen, setIsAvatarPickerOpen] = useState(false);
+  const [launchSnapshot, setLaunchSnapshot] = useState<ProjectReadinessSnapshot | null>(null);
+  const [projectReadiness, setProjectReadiness] = useState<ProjectReadinessSnapshot | null>(null);
   const [isEyeClosingActive, setIsEyeClosingActive] = useState(false);
   const [isSakuraActive, setIsSakuraActive] = useState(false);
   const [isFireworksActive, setIsFireworksActive] = useState(false);
-  const [themeMode, setThemeMode] = useState(
-    initialRoom.status === "completed" ? "remix" : "basic",
-  );
   const [recentOffering, setRecentOffering] = useState<string | null>(null);
 
   // Local visual sticks, added dynamically when receiving realtime broadcast
@@ -82,6 +89,12 @@ export default function LiveAltarPage({
 
   // Fullscreen states
   const [isFullscreen, setIsFullscreen] = useState(false);
+
+  const { themeMode, currentHallId, currentHallDeityId, toggleTheme, selectHall } = useAltarExperience({
+    themeMode: initialRoom.status === "completed" ? "remix" : "basic",
+    hallId: initialRoom.hallId ?? "",
+    deityId: initialRoom.primaryDeityId ?? "",
+  });
 
   const toggleFullscreen = () => {
     if (typeof document === "undefined") return;
@@ -216,39 +229,12 @@ export default function LiveAltarPage({
           setIsSakuraActive(true);
         }
 
-        // If this was finished by the current user, draw the oracle server-side
-        // (so the result can't be forged via query params) and redirect using
-        // only the real, persisted resultId.
-        if (actorId === user.id) {
-          void (async () => {
-            try {
-              const response = await fetch("/api/oracle", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                  eventType: "deploy",
-                  roomId: initialRoom.id,
-                }),
-              });
-
-              if (!response.ok) {
-                await showApiErrorToast(response, 'Không thể rút quẻ deploy.');
-                throw new Error("Failed to draw oracle");
-              }
-
-              const { result } = await response.json();
-              router.push(`/oracle/${result.id}`);
-            } catch (err) {
-              console.error(err);
-            }
-          })();
-        }
       }
     },
-    [themeMode, user.id, router, initialRoom.title, triggerBell],
+    [themeMode, user.id, triggerBell],
   );
 
-  const { room, participants, onlineCount, connectionStatus, updateActivity } =
+  const { room, participants, onlineCount, connectionStatus, updateActivity, sendAction, claimSeat, releaseSeat } =
     useTempleRoom({
       initialRoom,
       user,
@@ -280,21 +266,18 @@ export default function LiveAltarPage({
       )
         ? initialRoom.primaryDeityId ?? ''
         : initialHall.deities[0]?.slug || '';
-      setCurrentHallId((current) =>
-        nextHalls.some((hall) => hall.id === current) ? current : initialHall.id,
-      );
-      setCurrentHallDeityId((current) =>
-        initialHall.deities.some((deity) => deity.slug === current)
-          ? current
-          : initialPrimaryDeityId,
-      );
+      const hallId = nextHalls.some((hall) => hall.id === currentHallId) ? currentHallId : initialHall.id;
+      const deityId = initialHall.deities.some((deity) => deity.slug === currentHallDeityId)
+        ? currentHallDeityId
+        : initialPrimaryDeityId;
+      selectHall(hallId, deityId);
     }
 
     void loadHalls();
     return () => {
       cancelled = true;
     };
-  }, [initialRoom.hallId, initialRoom.primaryDeityId]);
+  }, [initialRoom.hallId, initialRoom.primaryDeityId, selectHall]);
 
   const persistHallSelection = useCallback(async (hall: HallCatalog, primaryDeityId: string) => {
     const supportDeityIds = hall.deities
@@ -315,14 +298,13 @@ export default function LiveAltarPage({
         return;
       }
 
-      setCurrentHallId(hall.id);
-      setCurrentHallDeityId(primaryDeityId);
+      selectHall(hall.id, primaryDeityId);
     } catch (error) {
       console.error('Could not switch hall', error);
     } finally {
       setIsHallSwitching(false);
     }
-  }, [room.id]);
+  }, [room.id, selectHall]);
 
   const handleHallChange = useCallback((hallId: string) => {
     const hall = halls.find((candidate) => candidate.id === hallId);
@@ -409,37 +391,6 @@ export default function LiveAltarPage({
     return () => clearInterval(interval);
   }, []);
 
-  async function sendAction(
-    type:
-      | "light_incense"
-      | "ring_bell"
-      | "start_praying"
-      | "finish_praying"
-      | "reaction"
-      | "clear_incense",
-    payload: Record<string, unknown> = {},
-  ) {
-    const eventId = crypto.randomUUID();
-    const response = await fetch(`/api/rooms/${room.id}/actions`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        eventId,
-        type,
-        payload,
-      }),
-    });
-
-    if (!response.ok) {
-      const errData = await showApiErrorToast(response, 'Không thể thực hiện hành động.');
-      throw new Error(
-        errData.error || `Action was rejected with status ${response.status}`,
-      );
-    }
-  }
-
   const handleAddStick = (newStick: IncenseStick) => {
     // Send action to DB/Realtime
     void sendAction("light_incense", {
@@ -484,16 +435,19 @@ export default function LiveAltarPage({
 
   const handleAddWish = async (newWish: Wish) => {
     await updateActivity("idle");
-    await sendAction("finish_praying", {
+    const response = await sendAction("finish_praying", {
       author: newWish.author,
       text: newWish.text,
       targetDeity: newWish.targetDeity,
       blessings: 1,
     });
+    if (response.result?.id) {
+      router.push(`/oracle/${response.result.id}`);
+    }
   };
 
   const handleToggleTheme = () => {
-    setThemeMode((prev) => (prev === "basic" ? "remix" : "basic"));
+    toggleTheme();
   };
 
   const currentDeityObj =
@@ -507,7 +461,7 @@ export default function LiveAltarPage({
     <div
       className={`w-screen h-screen max-h-screen overflow-hidden flex flex-col justify-between font-sans selection:bg-amber-500 selection:text-stone-950 p-2 md:p-4 relative transition-colors duration-700 select-none ${
         isRemix
-          ? "bg-[#1e0524] bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-fuchsia-800/70 via-[#2e0938] to-stone-950 text-fuchsia-100"
+          ? "remix-mode bg-[#1e0524] bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-fuchsia-800/70 via-[#2e0938] to-stone-950 text-fuchsia-100"
           : "bg-stone-950 text-stone-100"
       }`}
       style={
@@ -545,6 +499,9 @@ export default function LiveAltarPage({
         hasActiveIncense={visualSticks.length > 0}
         themeMode={themeMode}
       />
+
+      {isAvatarPickerOpen && <AvatarSeatPicker participants={participants} userId={user.id} themeMode={themeMode} onClaim={claimSeat} onRelease={releaseSeat} onClose={() => setIsAvatarPickerOpen(false)} />}
+      <LaunchRitualModal roomId={room.id} snapshot={launchSnapshot} themeMode={themeMode} onClose={() => setLaunchSnapshot(null)} onCompleted={(resultId) => { setIsFireworksActive(true); router.push(`/oracle/${resultId}`); }} />
 
       {/* Wish Wall Modal */}
       {isWishWallOpen && (
@@ -612,6 +569,7 @@ export default function LiveAltarPage({
 
             <OfferingTray
               disabled={connectionStatus !== "connected"}
+              themeMode={themeMode}
               onOffer={(offering) => {
                 handleOffer(offering);
                 setIsOfferingModalOpen(false);
@@ -684,6 +642,14 @@ export default function LiveAltarPage({
 
         {/* Right Side: Toolbar controls */}
         <div className="flex items-center gap-3 shrink-0">
+          <button
+            type="button"
+            onClick={() => setIsAvatarPickerOpen(true)}
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg border-none transition-all text-xs font-bold cursor-pointer ${isRemix ? 'bg-fuchsia-500/15 text-pink-200 hover:bg-fuchsia-500/25 hover:text-cyan-200' : 'bg-transparent hover:bg-white/10 hover:text-amber-300 text-stone-300'}`}
+            title="Chọn avatar và chỗ ngồi"
+          >
+            <span>🪑</span><span>{isRemix ? 'Chọn crew' : 'Chọn chỗ'}</span>
+          </button>
           {/* Bgm & Theme controls in Toolbar */}
           <BgmPlayer
             themeMode={themeMode}
@@ -736,45 +702,36 @@ export default function LiveAltarPage({
 
       {/* Clean Single Screen Altar Content (No Scroll, Ultra Clean View) */}
       <main className="flex-1 flex flex-col justify-center items-center relative overflow-hidden my-2 z-20 h-full">
-        {isRemix ? (
-          <>
-            <TechDeities
-              themeMode={themeMode}
-              activeDeityId={currentDeityId}
-              onSelectDeity={setCurrentDeityId}
-            />
-            <div className="absolute right-4 md:right-16 top-1/2 -translate-y-1/2 z-30">
-              <TempleBell bellCount={room.bellCount} strikeKey={bellStrikeKey} onRing={handleRingBell} disabled={connectionStatus !== "connected"} />
-            </div>
-            <CenserSection sticks={visualSticks} onAddStick={handleAddStick} themeMode={themeMode} />
-          </>
-        ) : (
-          <TempleScene
+        <TempleScene
+          theme={isRemix ? "remix" : "basic"}
             energy={room.energy}
             incenseCount={visualSticks.length}
             gods={
-              <SceneDeities
-                deities={activeHall?.deities ?? []}
-                activeDeityId={activeHallDeity?.slug}
-                onSelectDeity={handleHallDeitySelect}
-                disabled={isHallSwitching}
-              />
+              isRemix ? (
+                <RemixDeities activeDeityId={currentDeityId} onSelectDeity={setCurrentDeityId} />
+              ) : (
+                <SceneDeities deities={activeHall?.deities ?? []} activeDeityId={activeHallDeity?.slug}
+                  onSelectDeity={handleHallDeitySelect} disabled={isHallSwitching} />
+              )
             }
           >
             <div className="temple-scene-censer">
-              <CenserSection sticks={visualSticks} onAddStick={handleAddStick} themeMode="basic" />
+              <CenserSection sticks={visualSticks} onAddStick={handleAddStick} themeMode={themeMode} />
             </div>
+            {isRemix && <RemixEnergyTalisman energy={room.energy} incenseCount={visualSticks.length} />}
+            <ProjectSpirits readiness={projectReadiness} themeMode={themeMode} />
+            <SeatAvatars participants={participants} themeMode={themeMode} />
             <div className="temple-scene-bell">
               <TempleBell bellCount={room.bellCount} strikeKey={bellStrikeKey} onRing={handleRingBell} disabled={connectionStatus !== "connected"} />
             </div>
             {recentOffering && <div key={recentOffering} className="temple-offering-echo">🪷 Dâng lễ: {recentOffering}</div>}
           </TempleScene>
-        )}
       </main>
 
       {/* Eye Closing Overlay Effect for Prayer Meditation */}
       <EyeClosingOverlay
         isActive={isEyeClosingActive}
+        themeMode={themeMode}
         onFullyClosed={() => setIsPrayerModalOpen(true)}
         onComplete={() => setIsEyeClosingActive(false)}
       />
@@ -786,15 +743,17 @@ export default function LiveAltarPage({
         onRingBell={handleRingBell}
         onOpenOffering={() => setIsOfferingModalOpen(true)}
         isBellDisabled={connectionStatus !== "connected"}
+        themeMode={themeMode}
       />
 
       {/* Standalone Press F to Pray Button Block (Positioned right next to Action Bar) */}
-      <PressFToPrayButton onTriggerPray={handleTriggerPrayWithEyeClosing} />
+      <PressFToPrayButton onTriggerPray={handleTriggerPrayWithEyeClosing} themeMode={themeMode} />
+      <ProjectReadinessPanel roomId={room.id} themeMode={themeMode} onLaunch={setLaunchSnapshot} onSnapshot={setProjectReadiness} />
 
       {/* Floating Wish Wall Toggle Button */}
       <button
         onClick={() => setIsWishWallOpen(true)}
-        className="fixed bottom-4 right-4 z-40 bg-stone-900/80 backdrop-blur-md border border-amber-500/30 hover:border-amber-400 px-3.5 py-2 rounded-2xl text-xs font-bold text-amber-300 shadow-xl flex items-center gap-2 cursor-pointer transition-all hover:scale-105"
+        className={`fixed bottom-4 right-4 z-40 backdrop-blur-md px-3.5 py-2 rounded-2xl text-xs font-bold shadow-xl flex items-center gap-2 cursor-pointer transition-all hover:scale-105 ${isRemix ? 'bg-fuchsia-950/80 border border-fuchsia-400/50 hover:border-cyan-300 text-pink-200' : 'bg-stone-900/80 border border-amber-500/30 hover:border-amber-400 text-amber-300'}`}
         title="Xem danh sách sớ cầu nguyện"
       >
         <span>📜</span>
@@ -802,7 +761,7 @@ export default function LiveAltarPage({
       </button>
 
       {/* Floating Online Users Presence Panel */}
-      <div className="fixed bottom-4 left-4 z-40 bg-stone-950/40 backdrop-blur-md border border-stone-800/40 px-3 py-2 rounded-2xl flex flex-col gap-1.5 max-w-xs shadow-lg max-h-48 overflow-y-auto scrollbar-none select-none">
+      <div className={`fixed bottom-4 left-4 z-40 backdrop-blur-md px-3 py-2 rounded-2xl flex flex-col gap-1.5 max-w-xs shadow-lg max-h-48 overflow-y-auto scrollbar-none select-none ${isRemix ? 'bg-purple-950/55 border border-cyan-400/25' : 'bg-stone-950/40 border border-stone-800/40'}`}>
         <div className="flex items-center gap-1.5 text-[9px] font-black text-stone-400 uppercase tracking-wider">
           <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
           <span>Đồng môn online ({participants.length})</span>
@@ -813,7 +772,7 @@ export default function LiveAltarPage({
               key={idx}
               className={`px-2 py-0.5 rounded-lg text-[10px] font-bold border transition-colors ${
                 p.activity === "praying"
-                  ? "bg-amber-500/15 border-amber-500/35 text-amber-300 animate-pulse"
+                  ? isRemix ? "bg-fuchsia-500/15 border-fuchsia-400/35 text-pink-200 animate-pulse" : "bg-amber-500/15 border-amber-500/35 text-amber-300 animate-pulse"
                   : "bg-stone-900/40 border-stone-800/30 text-stone-400"
               }`}
             >

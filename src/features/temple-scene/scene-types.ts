@@ -13,3 +13,12 @@ export type SceneLayerConfig = {
   opacity?: number;
   mobileHidden?: boolean;
 };
+
+export type SceneTheme = 'basic' | 'remix';
+
+export type SceneConfig = {
+  layers: SceneLayerConfig[];
+  anchors: Record<'plaque' | 'altar' | 'bell' | 'offering' | 'deities', SceneAnchor>;
+  label: string;
+  plaque: string;
+};

@@ -4,6 +4,8 @@ import { z } from "zod";
 import { createClient } from "@/lib/supabase/server";
 import { enforceRateLimit } from "@/lib/rate-limit";
 import { isValidOfferingId } from "@/features/offerings/offering-catalog";
+import { completePrayerRitual, PrayerCompletionError } from "@/features/ritual/prayer-completion";
+import { toRoomSnapshot, type RoomSnapshot } from "@/features/temple-room/room-projection";
 
 const roomActionSchema = z.object({
   eventId: z.string().uuid(),
@@ -153,6 +155,53 @@ export async function POST(
     if (offeringRateLimited) return offeringRateLimited;
   }
 
+  // Prayer completion is a server-owned transaction. It draws the Oracle
+  // from the room's event type, persists the action/counter/result/audit row
+  // together, and returns the same result for a retried eventId.
+  if (parsedBody.data.type === "finish_praying") {
+    let completion;
+    try {
+      completion = await completePrayerRitual(supabase, {
+        roomId,
+        userId: user.id,
+        eventId: parsedBody.data.eventId,
+        payload: parsedBody.data.payload,
+      });
+    } catch (error) {
+      const code = error instanceof PrayerCompletionError ? error.code : "COMPLETION_FAILED";
+      console.error("Prayer completion failed:", { roomId, eventId: parsedBody.data.eventId, error });
+      return NextResponse.json({ error: code }, { status: code === "ROOM_NOT_FOUND" ? 404 : code === "NOT_A_ROOM_MEMBER" ? 403 : 500 });
+    }
+
+    const room = toRoomSnapshot(completion.room as unknown as Parameters<typeof toRoomSnapshot>[0]);
+
+    if (!completion.duplicated) {
+      const channel = supabase.channel(`room:${roomId}`, { config: { private: true } });
+      await Promise.resolve(channel.send({
+        type: "broadcast",
+        event: "room-action",
+        payload: {
+          eventId: parsedBody.data.eventId,
+          actorId: user.id,
+          actionType: "finish_praying",
+          actionPayload: {
+            ...parsedBody.data.payload,
+            oracleResultId: completion.result.id,
+          },
+          createdAt: new Date().toISOString(),
+          room,
+        },
+      })).finally(() => supabase.removeChannel(channel));
+    }
+
+    return NextResponse.json({
+      accepted: true,
+      duplicated: completion.duplicated,
+      room,
+      result: completion.result,
+    }, { status: 202 });
+  }
+
   // Idempotency guard: eventId is the primary key, so a duplicate insert
   // (e.g. a retried request after a dropped response) fails with 23505
   // instead of double-recording the action.
@@ -187,20 +236,7 @@ export async function POST(
   // the *record* already exists, but we still want a consistent room snapshot
   // to return. We only re-apply counters for genuinely new actions to avoid
   // double-counting a retried request.
-  let room: {
-    id: string;
-    title: string;
-    projectName: string;
-    eventType: "build" | "deploy" | "migration" | "release";
-    prayer: string;
-    status: "waiting" | "praying" | "completed";
-    incenseCount: number;
-    bellCount: number;
-    prayerCount: number;
-    offeringCount: number;
-    energy: number;
-    revision: number;
-  } | null = null;
+  let room: RoomSnapshot | null = null;
 
   if (!isDuplicate) {
     const { data: updatedRoom, error: rpcError } = await supabase.rpc(
@@ -233,20 +269,7 @@ export async function POST(
 
     // The RPC returns the raw `rooms` row (snake_case); map it to the
     // camelCase RoomSnapshot shape the realtime client expects.
-    room = {
-      id: updatedRoom.id,
-      title: updatedRoom.title,
-      projectName: updatedRoom.project_name,
-      eventType: updatedRoom.event_type,
-      prayer: updatedRoom.prayer,
-      status: updatedRoom.status,
-      incenseCount: updatedRoom.incense_count,
-      bellCount: updatedRoom.bell_count,
-      prayerCount: updatedRoom.prayer_count,
-      offeringCount: updatedRoom.offering_count,
-      energy: updatedRoom.energy,
-      revision: updatedRoom.revision,
-    };
+    room = toRoomSnapshot(updatedRoom);
 
     // Log the individual offering (which item, by whom) and broadcast the
     // updated room snapshot to every connected client — these two side

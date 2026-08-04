@@ -2,15 +2,18 @@ import { useEffect, useState } from "react";
 
 type EyeClosingOverlayProps = {
   isActive: boolean;
+  themeMode?: string;
   onComplete?: () => void;
   onFullyClosed?: () => void;
 };
 
 export default function EyeClosingOverlay({
   isActive,
+  themeMode,
   onComplete,
   onFullyClosed,
 }: EyeClosingOverlayProps) {
+  const isRemix = themeMode === "remix";
   const [phase, setPhase] = useState<"idle" | "closing" | "closed" | "opening">("idle");
 
   useEffect(() => {
@@ -63,8 +66,8 @@ export default function EyeClosingOverlay({
           phase === "closed" ? "opacity-100" : "opacity-0"
         }`}
       >
-        <div className="w-28 h-28 rounded-full bg-amber-500/15 blur-2xl animate-pulse" />
-        <span className="font-serif italic text-amber-200/95 text-lg md:text-2xl font-bold tracking-widest animate-pulse mt-4 text-shadow">
+        <div className={`w-28 h-28 rounded-full blur-2xl animate-pulse ${isRemix ? "bg-fuchsia-500/20" : "bg-amber-500/15"}`} />
+        <span className={`font-serif italic text-lg md:text-2xl font-bold tracking-widest animate-pulse mt-4 text-shadow ${isRemix ? "text-pink-200/95" : "text-amber-200/95"}`}>
           🧘 Thành tâm nhắm mắt khấn nguyện...
         </span>
       </div>

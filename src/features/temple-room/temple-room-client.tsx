@@ -2,7 +2,6 @@
 
 import { useCallback, useState } from "react";
 
-import { showApiErrorToast } from "../../lib/api-error-toast";
 import {
   type RoomSnapshot,
   useTempleRoom,
@@ -67,43 +66,12 @@ export function TempleRoomClient({
     onlineCount,
     connectionStatus,
     updateActivity,
+    sendAction,
   } = useTempleRoom({
     initialRoom,
     user,
     onRealtimeAction: handleRealtimeAction,
   });
-
-  async function sendAction(
-    type:
-      | "light_incense"
-      | "ring_bell"
-      | "start_praying"
-      | "finish_praying"
-      | "reaction",
-    payload: Record<string, unknown> = {},
-  ) {
-    const eventId = crypto.randomUUID();
-
-    const response = await fetch(
-      `/api/rooms/${room.id}/actions`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          eventId,
-          type,
-          payload,
-        }),
-      },
-    );
-
-    if (!response.ok) {
-      await showApiErrorToast(response, "Action was rejected");
-      throw new Error("Action was rejected");
-    }
-  }
 
   async function startPraying() {
     await updateActivity("praying");

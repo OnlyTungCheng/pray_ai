@@ -1,0 +1,6 @@
+Use case: stylized-concept
+Asset type: 16:9 backdrop for an interactive web music-prayer scene
+Primary request: A wide empty Vinahouse electronic nightclub stage interior, viewed straight-on at eye level, with a clear large dark-purple central stage zone reserved for HTML DJ altar and characters. Symmetrical architectural light trusses, distant speaker stacks at far edges, subtle geometric East-Asian inspired carved trim, polished stylized 3D game-environment quality.
+Composition/framing: 16:9 wide scene; center and lower 45% must remain visually quiet and unobstructed; no foreground console, no people, no mascot, no DJ, no furniture in the center.
+Lighting/mood: joyful nighttime club, restrained pink, fuchsia and cyan neon rim lighting, soft volumetric haze, dim dark base for readable UI.
+Constraints: no text, logos, watermarks, UI, fireworks, disco ball, turntable, smoke, confetti, or characters.

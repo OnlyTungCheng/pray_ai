@@ -17,12 +17,12 @@ export type ChibiAvatar = {
 };
 
 export const CHIBI_AVATARS: ChibiAvatar[] = [
-  { id: 'dev_1', label: 'Dev 1', file: '/chibi-avatars-v1/avatar-1.png' },
-  { id: 'dev_2', label: 'Dev 2', file: '/chibi-avatars-v1/avatar-2.png' },
-  { id: 'dev_3', label: 'Dev 3', file: '/chibi-avatars-v1/avatar-3.png' },
-  { id: 'dev_4', label: 'Dev 4', file: '/chibi-avatars-v1/avatar-4.png' },
-  { id: 'dev_5', label: 'Dev 5', file: '/chibi-avatars-v1/avatar-5.png' },
-  { id: 'dev_6', label: 'Dev 6', file: '/chibi-avatars-v1/avatar-6.png' }
+  { id: 'dev_1', label: 'Neon Dev', file: '/chibi-avatars-v1/avatar-1.png' },
+  { id: 'dev_2', label: 'Byte Rider', file: '/chibi-avatars-v1/avatar-2.png' },
+  { id: 'dev_3', label: 'Cloud Crafter', file: '/chibi-avatars-v1/avatar-3.png' },
+  { id: 'dev_4', label: 'Debug Hero', file: '/chibi-avatars-v1/avatar-4.png' },
+  { id: 'dev_5', label: 'Pixel Pilot', file: '/chibi-avatars-v1/avatar-5.png' },
+  { id: 'dev_6', label: 'Deploy Star', file: '/chibi-avatars-v1/avatar-6.png' }
 ];
 
 export const AVATAR_IDS = CHIBI_AVATARS.map((avatar) => avatar.id);

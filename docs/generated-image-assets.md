@@ -16,6 +16,10 @@ Inventory of images generated for the Cyber Temple experience. This document sep
 | OpenGraph room preview | `public/temple-og-preview-v1.png` | 1200×630 social-card background; the room title and ritual description are supplied dynamically in metadata. | `src/app/temple/[roomId]/page.tsx` |
 | Temple depth foreground | `public/temple-scene-v1/cyber-temple-foreground-depth.png` | Alpha foreground cột/đèn near-camera, generated from the current Basic background to add 2.5D depth without replacing the existing altar/censer. | `src/features/temple-scene/TempleScene.tsx` |
 
+| Remix Scene v1 | `public/remix-scene-v1-backdrop.png`, `public/remix-scene-v1-foreground.png` | Vinahouse electronic stage backdrop plus alpha speaker/light-rig frame. The empty center remains reserved for interactive HTML DJ altar and DJ cards. | `src/features/temple-scene/TempleScene.tsx` |
+| Remix neon talisman | `public/remix-neon-talisman-v1.png` | Alpha vinyl/equalizer talisman. Its opacity and charged state represent persisted room energy and active sparklers. | `src/features/effects/RemixEnergyTalisman.tsx` |
+| Chibi developer avatars v1 | `public/chibi-avatars-v1/avatar-1.png` through `avatar-6.png` | Six alpha developer avatars for per-room seat selection and live Presence rendering. They are distinct from deity and mascot assets. | `src/features/avatars/` |
+
 ### Oracle tier mapping
 
 | Tier | Artwork | File |
@@ -68,3 +72,12 @@ Every generated asset keeps its prompt beside the final output when applicable. 
 - `public/oracle-cards-qc-temp/`: non-strict diagnostic extraction used to explain the source-cell boundary result. Use `oracle-cards-v1/`.
 
 All project-bound generated art was created with built-in image generation and processed locally with Sprite Forge (`generate2dsprite`) for chroma cleanup, extraction, alignment, and QC.
+# Project Success Ritual spirits v1
+
+| Asset | Path | Format | Use |
+| --- | --- | --- | --- |
+| Build Spirit | `public/project-spirits-v1/build-spirit.png` | PNG, alpha | Build/test readiness guardian. |
+| Guardian Spirit | `public/project-spirits-v1/guardian-spirit.png` | PNG, alpha | Review and rollback protector. |
+| Launch Spirit | `public/project-spirits-v1/launch-spirit.png` | PNG, alpha | Deploy/release celebration guardian. |
+
+Generated with built-in ImageGen (`stylized-concept`), each on a flat chroma key and processed using `remove_chroma_key.py` with auto border-key, soft matte and despill. No text or UI is embedded. The three source prompts are recorded in the implementation history; runtime copies are the alpha PNG files above.
