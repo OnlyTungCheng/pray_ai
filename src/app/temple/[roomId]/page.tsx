@@ -42,14 +42,21 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const description = room
     ? `⛩️ ${room.title} — ${EVENT_LABELS[room.eventType] ?? room.eventType}. ${room.prayer}`
     : 'Lập đền thắp nhang, gõ chuông cầu nguyện trước giờ deploy.';
+  const canonicalPath = `/temple/${roomId}`;
 
   return {
     title,
     description,
+    alternates: {
+      canonical: canonicalPath
+    },
     openGraph: {
       title,
       description,
       type: 'website',
+      locale: 'vi_VN',
+      siteName: 'Đền Cầu Nguyện',
+      url: canonicalPath,
       images: [
         {
           url: '/temple-og-preview-v1.png',
